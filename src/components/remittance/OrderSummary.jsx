@@ -12,11 +12,10 @@ export default function OrderSummary({ formData, calculations, onSubmit, isSubmi
     return currencies[code] || code;
   };
 
-  const isValid = formData.sender_business_name && 
+  const isValid = formData.customer_name && 
                   formData.beneficiary_name && 
-                  formData.send_amount > 0 && 
-                  formData.send_currency && 
-                  formData.receive_currency;
+                  formData.transfer_amount > 0 && 
+                  formData.currency;
 
   return (
     <Card className="border-2 border-blue-900 shadow-lg sticky top-6">
@@ -29,39 +28,32 @@ export default function OrderSummary({ formData, calculations, onSubmit, isSubmi
       <CardContent className="pt-6 space-y-4">
         <div className="space-y-3">
           <div className="flex justify-between items-center pb-3 border-b border-slate-200">
-            <span className="text-slate-600 text-sm">You Send</span>
+            <span className="text-slate-600 text-sm">Transfer Amount</span>
             <span className="font-semibold text-lg text-slate-800">
-              {getCurrencySymbol(formData.send_currency)} {formData.send_amount?.toFixed(2) || '0.00'}
+              {getCurrencySymbol(formData.currency)} {formData.transfer_amount?.toFixed(2) || '0.00'}
             </span>
           </div>
 
           <div className="flex justify-between items-center text-sm">
-            <span className="text-slate-600">Transfer Fee</span>
+            <span className="text-slate-600">Remuneration ({formData.remuneration_percentage || 0}%)</span>
             <span className="text-slate-700">
-              {getCurrencySymbol(formData.send_currency)} {calculations.transfer_fee.toFixed(2)}
-            </span>
-          </div>
-
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-slate-600">Exchange Rate</span>
-            <span className="text-slate-700">
-              {calculations.exchange_rate.toFixed(4)}
+              {getCurrencySymbol(formData.currency)} {(formData.remuneration_amount || 0).toFixed(2)}
             </span>
           </div>
 
           <div className="flex justify-between items-center pt-3 border-t-2 border-slate-300">
-            <span className="font-semibold text-slate-700">Total Cost</span>
+            <span className="font-semibold text-slate-700">Total Payment Amount</span>
             <span className="font-bold text-xl text-blue-900">
-              {getCurrencySymbol(formData.send_currency)} {calculations.total_cost.toFixed(2)}
+              {getCurrencySymbol(formData.currency)} {(formData.total_payment_amount || 0).toFixed(2)}
             </span>
           </div>
 
-          <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-lg p-4 mt-4">
-            <div className="text-sm text-slate-600 mb-1">Recipient Gets</div>
-            <div className="font-bold text-2xl text-emerald-700">
-              {getCurrencySymbol(formData.receive_currency)} {calculations.receive_amount.toFixed(2)}
+          {formData.order_number && (
+            <div className="bg-gradient-to-r from-slate-50 to-blue-50 border border-slate-200 rounded-lg p-3 mt-4">
+              <div className="text-xs text-slate-600 mb-1">Order Number</div>
+              <div className="font-mono font-semibold text-slate-800">{formData.order_number}</div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="pt-4 space-y-3">

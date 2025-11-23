@@ -2,7 +2,8 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UserCheck, CreditCard, Building, Globe, Phone } from 'lucide-react';
+import { Textarea } from "@/components/ui/textarea";
+import { UserCheck, CreditCard, Building, Globe, Hash, MapPin } from 'lucide-react';
 
 export default function BeneficiarySection({ formData, onChange }) {
   return (
@@ -32,33 +33,17 @@ export default function BeneficiarySection({ formData, onChange }) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="beneficiary_account" className="text-slate-700 font-medium">
-            Account Number / Mobile Money
+          <Label htmlFor="beneficiary_address" className="text-slate-700 font-medium">
+            Beneficiary Address
           </Label>
           <div className="relative">
-            <CreditCard className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
-            <Input
-              id="beneficiary_account"
-              value={formData.beneficiary_account || ''}
-              onChange={(e) => onChange({ beneficiary_account: e.target.value })}
-              placeholder="Bank account or mobile money number"
-              className="pl-10 border-slate-200 focus:border-blue-900 focus:ring-blue-900"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="beneficiary_bank" className="text-slate-700 font-medium">
-            Bank / Provider Name
-          </Label>
-          <div className="relative">
-            <Building className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
-            <Input
-              id="beneficiary_bank"
-              value={formData.beneficiary_bank || ''}
-              onChange={(e) => onChange({ beneficiary_bank: e.target.value })}
-              placeholder="Bank name or mobile money provider"
-              className="pl-10 border-slate-200 focus:border-blue-900 focus:ring-blue-900"
+            <MapPin className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+            <Textarea
+              id="beneficiary_address"
+              value={formData.beneficiary_address || ''}
+              onChange={(e) => onChange({ beneficiary_address: e.target.value })}
+              placeholder="Full address"
+              className="pl-10 border-slate-200 focus:border-blue-900 focus:ring-blue-900 min-h-[60px]"
             />
           </div>
         </div>
@@ -74,27 +59,92 @@ export default function BeneficiarySection({ formData, onChange }) {
                 id="beneficiary_country"
                 value={formData.beneficiary_country || ''}
                 onChange={(e) => onChange({ beneficiary_country: e.target.value })}
-                placeholder="Recipient country"
+                placeholder="Beneficiary country"
                 className="pl-10 border-slate-200 focus:border-blue-900 focus:ring-blue-900"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="beneficiary_phone" className="text-slate-700 font-medium">
-              Phone Number
+            <Label htmlFor="beneficiary_registration_number" className="text-slate-700 font-medium">
+              Registration Number
             </Label>
             <div className="relative">
-              <Phone className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+              <Hash className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
               <Input
-                id="beneficiary_phone"
-                type="tel"
-                value={formData.beneficiary_phone || ''}
-                onChange={(e) => onChange({ beneficiary_phone: e.target.value })}
-                placeholder="+234 xxx xxx xxxx"
+                id="beneficiary_registration_number"
+                value={formData.beneficiary_registration_number || ''}
+                onChange={(e) => onChange({ beneficiary_registration_number: e.target.value })}
+                placeholder="Tax ID or registration number"
                 className="pl-10 border-slate-200 focus:border-blue-900 focus:ring-blue-900"
               />
             </div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="account_number" className="text-slate-700 font-medium">
+            Account Number / IBAN
+          </Label>
+          <div className="relative">
+            <CreditCard className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+            <Input
+              id="account_number"
+              value={formData.account_number || ''}
+              onChange={(e) => onChange({ account_number: e.target.value })}
+              placeholder="Bank account number or IBAN"
+              className="pl-10 border-slate-200 focus:border-blue-900 focus:ring-blue-900"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="space-y-2">
+            <Label htmlFor="beneficiary_bank" className="text-slate-700 font-medium">
+              Beneficiary Bank
+            </Label>
+            <div className="relative">
+              <Building className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+              <Input
+                id="beneficiary_bank"
+                value={formData.beneficiary_bank || ''}
+                onChange={(e) => onChange({ beneficiary_bank: e.target.value })}
+                placeholder="Bank name"
+                className="pl-10 border-slate-200 focus:border-blue-900 focus:ring-blue-900"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="bic" className="text-slate-700 font-medium">
+              BIC/SWIFT Code
+            </Label>
+            <div className="relative">
+              <Hash className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+              <Input
+                id="bic"
+                value={formData.bic || ''}
+                onChange={(e) => onChange({ bic: e.target.value })}
+                placeholder="Bank Identifier Code"
+                className="pl-10 border-slate-200 focus:border-blue-900 focus:ring-blue-900"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="bank_address" className="text-slate-700 font-medium">
+            Bank Address
+          </Label>
+          <div className="relative">
+            <MapPin className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+            <Textarea
+              id="bank_address"
+              value={formData.bank_address || ''}
+              onChange={(e) => onChange({ bank_address: e.target.value })}
+              placeholder="Full bank address"
+              className="pl-10 border-slate-200 focus:border-blue-900 focus:ring-blue-900 min-h-[60px]"
+            />
           </div>
         </div>
       </CardContent>
