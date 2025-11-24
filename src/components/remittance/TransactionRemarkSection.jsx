@@ -154,6 +154,19 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
+                <Label htmlFor="payment" className="text-slate-700 font-medium">
+                  Payment Type {'{PAYMENT}'}
+                </Label>
+                <Input
+                  id="payment"
+                  value={formData.remark_payment || 'Payment'}
+                  onChange={(e) => onChange({ remark_payment: e.target.value })}
+                  placeholder="Payment, partial payment"
+                  className="border-slate-200 focus:border-blue-900 focus:ring-blue-900"
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="goods" className="text-slate-700 font-medium">
                   Goods {'{GOODS}'}
                 </Label>
@@ -164,19 +177,6 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
                   placeholder="goods"
                   className="border-slate-200 focus:border-blue-900 focus:ring-blue-900"
                   maxLength={40}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="payment" className="text-slate-700 font-medium">
-                  Payment Type {'{PAYMENT}'}
-                </Label>
-                <Input
-                  id="payment"
-                  value={formData.remark_payment || 'Payment'}
-                  onChange={(e) => onChange({ remark_payment: e.target.value })}
-                  placeholder="Payment, partial payment"
-                  className="border-slate-200 focus:border-blue-900 focus:ring-blue-900"
                 />
               </div>
             </div>
