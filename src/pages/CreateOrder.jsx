@@ -141,23 +141,25 @@ export default function CreateOrder() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-900 to-slate-800 text-white shadow-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="bg-white shadow-xl border-b-4 border-blue-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                <Send className="w-6 h-6" />
-              </div>
+            <div className="flex items-center gap-6">
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a9a123941f81322f5/c4fdf42c3_ee439192-547e-43ba-88b9-6135cbdd7509.JPG" 
+                alt="PT Garuda Arma Nusa" 
+                className="h-16 md:h-20 w-auto object-contain"
+              />
               <div>
-                <h1 className="text-3xl font-bold tracking-tight">Create Payment Order</h1>
-                <p className="text-blue-100 mt-1">International fund transfer service</p>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-800">Create Payment Order</h1>
+                <p className="text-slate-600 mt-1">International fund transfer service</p>
               </div>
             </div>
             {createdOrder && (
               <Button
                 onClick={exportToCSV}
                 variant="outline"
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                className="border-slate-300 text-slate-700 hover:bg-slate-50"
               >
                 <Download className="w-4 h-4 mr-2" />
                 Export CSV
