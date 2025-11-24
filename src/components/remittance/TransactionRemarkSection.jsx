@@ -4,13 +4,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, AlertCircle, Eye } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FileText, AlertCircle, Eye, Plus, X } from 'lucide-react';
 import { validateLatinText, buildRemarkFromTemplate } from './utils/validators';
 
 const DEFAULT_TEMPLATE = '{PAYMENT} for {GOODS} under {TYPE} {INV_NO} dd {DATE}';
 
+const DEFAULT_DOCUMENT_TYPES = [
+  { value: 'inv', label: 'Invoice' },
+  { value: 'invoice', label: 'Invoice (full)' },
+  { value: 'contract', label: 'Contract' },
+  { value: 'proforma invoice', label: 'Proforma Invoice' }
+];
+
 export default function TransactionRemarkSection({ formData, onChange, errors, setErrors }) {
   const [preview, setPreview] = useState('');
+  const [documentTypes, setDocumentTypes] = useState(DEFAULT_DOCUMENT_TYPES);
+  const [newDocType, setNewDocType] = useState('');
+  const [showAddType, setShowAddType] = useState(false);
 
   useEffect(() => {
     if (formData.transaction_remark_mode === 'template') {
@@ -66,6 +78,29 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
       ...prev,
       transaction_remark: null
     }));
+  };
+
+  const handleAddDocType = () => {
+    if (newDocType.trim()) {
+      const value = newDocType.trim().toLowerCase();
+      const label = newDocType.trim();
+      
+      if (!documentTypes.find(dt => dt.value === value)) {
+        setDocumentTypes([...documentTypes, { value, label }]);
+        onChange({ remark_type: value });
+        setNewDocType('');
+        setShowAddType(false);
+      }
+    }
+  };
+
+  const handleRemoveDocType = (value) => {
+    if (!DEFAULT_DOCUMENT_TYPES.find(dt => dt.value === value)) {
+      setDocumentTypes(documentTypes.filter(dt => dt.value !== value));
+      if (formData.remark_type === value) {
+        onChange({ remark_type: 'inv' });
+      }
+    }
   };
 
   return (
@@ -162,16 +197,86 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="type" className="text-slate-700 font-medium">
+                <Label className="text-slate-700 font-medium">
                   Document Type {'{TYPE}'}
                 </Label>
-                <Input
-                  id="type"
-                  value={formData.remark_type || 'inv'}
-                  onChange={(e) => onChange({ remark_type: e.target.value })}
-                  placeholder="inv, invoice, contract, proforma invoice"
-                  className="border-slate-200 focus:border-blue-900 focus:ring-blue-900"
-                />
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <Select
+                      value={formData.remark_type || 'inv'}
+                      onValueChange={(value) => onChange({ remark_type: value })}
+                    >
+                      <SelectTrigger className="flex-1 border-slate-200 focus:border-blue-900 focus:ring-blue-900">
+                        <SelectValue placeholder="Select document type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {documentTypes.map((docType) => (
+                          <SelectItem key={docType.value} value={docType.value}>
+                            <div className="flex items-center justify-between w-full">
+                              <span>{docType.label}</span>
+                              {!DEFAULT_DOCUMENT_TYPES.find(dt => dt.value === docType.value) && (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRemoveDocType(docType.value);
+                                  }}
+                                  className="ml-2 text-red-500 hover:text-red-700"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              )}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setShowAddType(!showAddType)}
+                      className="border-slate-200"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  
+                  {showAddType && (
+                    <div className="flex gap-2">
+                      <Input
+                        value={newDocType}
+                        onChange={(e) => setNewDocType(e.target.value)}
+                        placeholder="Enter new document type..."
+                        className="border-slate-200 focus:border-blue-900 focus:ring-blue-900"
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleAddDocType();
+                          }
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleAddDocType}
+                        size="sm"
+                        className="bg-blue-900 hover:bg-blue-800"
+                      >
+                        Add
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          setShowAddType(false);
+                          setNewDocType('');
+                        }}
+                        size="sm"
+                        variant="outline"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-2">
