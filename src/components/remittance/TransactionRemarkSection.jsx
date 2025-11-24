@@ -7,9 +7,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, AlertCircle, Eye, Plus, X } from 'lucide-react';
-import { validateLatinText, buildRemarkFromTemplate } from './utils/validators';
-
-const DEFAULT_TEMPLATE = '{PAYMENT} for {GOODS} under {TYPE} {INV_NO} dd {DATE}';
+import { validateLatinText, parseDate } from './utils/validators';
 
 const DEFAULT_DOCUMENT_TYPES = [
   { value: 'inv', label: 'Invoice' },
@@ -20,28 +18,40 @@ const DEFAULT_DOCUMENT_TYPES = [
 
 export default function TransactionRemarkSection({ formData, onChange, errors, setErrors }) {
   const [preview, setPreview] = useState('');
-  const [documentTypes, setDocumentTypes] = useState(DEFAULT_DOCUMENT_TYPES);
-  const [newDocType, setNewDocType] = useState('');
-  const [showAddType, setShowAddType] = useState(false);
+  const [documents, setDocuments] = useState([
+    { type: 'inv', number: '', date: '' }
+  ]);
 
   useEffect(() => {
     if (formData.transaction_remark_mode === 'template') {
-      const tokens = {
-        INV_NO: formData.remark_inv_no,
-        DATE: formData.remark_date,
-        GOODS: formData.remark_goods,
-        TYPE: formData.remark_type,
-        PAYMENT: formData.remark_payment
-      };
+      // Build remark with multiple documents
+      let remark = `${formData.remark_payment || 'Payment'} for ${formData.remark_goods || 'goods'} under `;
       
-      const result = buildRemarkFromTemplate(DEFAULT_TEMPLATE, tokens);
-      setPreview(result.remark);
-      onChange({ transaction_remark: result.remark });
+      const docParts = documents
+        .filter(doc => doc.number && doc.date)
+        .map(doc => {
+          const parsed = parseDate(doc.date);
+          return `${doc.type} ${doc.number} dd ${parsed?.formatted || doc.date}`;
+        });
       
-      if (result.errors.length > 0) {
+      if (docParts.length > 0) {
+        remark += docParts.join(', ');
+      } else {
+        remark = '';
+      }
+      
+      setPreview(remark);
+      onChange({ transaction_remark: remark });
+      
+      if (remark.length > 500) {
         setErrors(prev => ({
           ...prev,
-          transaction_remark: result.errors.join('; ')
+          transaction_remark: 'Transaction remark exceeds 500 characters'
+        }));
+      } else if (!remark) {
+        setErrors(prev => ({
+          ...prev,
+          transaction_remark: 'Please add at least one document'
         }));
       } else {
         setErrors(prev => ({
@@ -52,11 +62,9 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
     }
   }, [
     formData.transaction_remark_mode,
-    formData.remark_inv_no,
-    formData.remark_date,
     formData.remark_goods,
-    formData.remark_type,
-    formData.remark_payment
+    formData.remark_payment,
+    documents
   ]);
 
   const handleManualChange = (value) => {
@@ -80,27 +88,20 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
     }));
   };
 
-  const handleAddDocType = () => {
-    if (newDocType.trim()) {
-      const value = newDocType.trim().toLowerCase();
-      const label = newDocType.trim();
-      
-      if (!documentTypes.find(dt => dt.value === value)) {
-        setDocumentTypes([...documentTypes, { value, label }]);
-        onChange({ remark_type: value });
-        setNewDocType('');
-        setShowAddType(false);
-      }
+  const addDocument = () => {
+    setDocuments([...documents, { type: 'inv', number: '', date: '' }]);
+  };
+
+  const removeDocument = (index) => {
+    if (documents.length > 1) {
+      setDocuments(documents.filter((_, i) => i !== index));
     }
   };
 
-  const handleRemoveDocType = (value) => {
-    if (!DEFAULT_DOCUMENT_TYPES.find(dt => dt.value === value)) {
-      setDocumentTypes(documentTypes.filter(dt => dt.value !== value));
-      if (formData.remark_type === value) {
-        onChange({ remark_type: 'inv' });
-      }
-    }
+  const updateDocument = (index, field, value) => {
+    const newDocs = [...documents];
+    newDocs[index][field] = value;
+    setDocuments(newDocs);
   };
 
   return (
@@ -148,40 +149,10 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
           <div className="space-y-4">
             <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
               <div className="text-xs text-slate-600 mb-1">Template:</div>
-              <code className="text-sm text-slate-800">{DEFAULT_TEMPLATE}</code>
+              <code className="text-sm text-slate-800">{'{PAYMENT}'} for {'{GOODS}'} under {'{TYPE} {NUMBER} dd {DATE}'} (multiple)</code>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="inv_no" className="text-slate-700 font-medium">
-                  Invoice Number * {'{INV_NO}'}
-                </Label>
-                <Input
-                  id="inv_no"
-                  value={formData.remark_inv_no || ''}
-                  onChange={(e) => onChange({ remark_inv_no: e.target.value })}
-                  placeholder="e.g., 24543"
-                  className="border-slate-200 focus:border-blue-900 focus:ring-blue-900"
-                  maxLength={32}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="remark_date" className="text-slate-700 font-medium">
-                  Invoice Date * {'{DATE}'}
-                </Label>
-                <Input
-                  id="remark_date"
-                  type="date"
-                  value={formData.remark_date || ''}
-                  onChange={(e) => onChange({ remark_date: e.target.value })}
-                  className="border-slate-200 focus:border-blue-900 focus:ring-blue-900"
-                  required
-                />
-                <div className="text-xs text-slate-500">Format: DD/MM/YYYY in output</div>
-              </div>
-
               <div className="space-y-2">
                 <Label htmlFor="goods" className="text-slate-700 font-medium">
                   Goods {'{GOODS}'}
@@ -197,89 +168,6 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
               </div>
 
               <div className="space-y-2">
-                <Label className="text-slate-700 font-medium">
-                  Document Type {'{TYPE}'}
-                </Label>
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <Select
-                      value={formData.remark_type || 'inv'}
-                      onValueChange={(value) => onChange({ remark_type: value })}
-                    >
-                      <SelectTrigger className="flex-1 border-slate-200 focus:border-blue-900 focus:ring-blue-900">
-                        <SelectValue placeholder="Select document type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {documentTypes.map((docType) => (
-                          <SelectItem key={docType.value} value={docType.value}>
-                            <div className="flex items-center justify-between w-full">
-                              <span>{docType.label}</span>
-                              {!DEFAULT_DOCUMENT_TYPES.find(dt => dt.value === docType.value) && (
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleRemoveDocType(docType.value);
-                                  }}
-                                  className="ml-2 text-red-500 hover:text-red-700"
-                                >
-                                  <X className="w-3 h-3" />
-                                </button>
-                              )}
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => setShowAddType(!showAddType)}
-                      className="border-slate-200"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  
-                  {showAddType && (
-                    <div className="flex gap-2">
-                      <Input
-                        value={newDocType}
-                        onChange={(e) => setNewDocType(e.target.value)}
-                        placeholder="Enter new document type..."
-                        className="border-slate-200 focus:border-blue-900 focus:ring-blue-900"
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            handleAddDocType();
-                          }
-                        }}
-                      />
-                      <Button
-                        type="button"
-                        onClick={handleAddDocType}
-                        size="sm"
-                        className="bg-blue-900 hover:bg-blue-800"
-                      >
-                        Add
-                      </Button>
-                      <Button
-                        type="button"
-                        onClick={() => {
-                          setShowAddType(false);
-                          setNewDocType('');
-                        }}
-                        size="sm"
-                        variant="outline"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="payment" className="text-slate-700 font-medium">
                   Payment Type {'{PAYMENT}'}
                 </Label>
@@ -291,6 +179,82 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
                   className="border-slate-200 focus:border-blue-900 focus:ring-blue-900"
                 />
               </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-slate-700 font-medium">Documents</Label>
+                <Button
+                  type="button"
+                  onClick={addDocument}
+                  size="sm"
+                  variant="outline"
+                  className="border-blue-900 text-blue-900 hover:bg-blue-50"
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  Add Document
+                </Button>
+              </div>
+
+              {documents.map((doc, index) => (
+                <div key={index} className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div className="space-y-2">
+                        <Label className="text-xs text-slate-600">Document Type *</Label>
+                        <Select
+                          value={doc.type}
+                          onValueChange={(value) => updateDocument(index, 'type', value)}
+                        >
+                          <SelectTrigger className="border-slate-200">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {DEFAULT_DOCUMENT_TYPES.map((docType) => (
+                              <SelectItem key={docType.value} value={docType.value}>
+                                {docType.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-xs text-slate-600">Document Number *</Label>
+                        <Input
+                          value={doc.number}
+                          onChange={(e) => updateDocument(index, 'number', e.target.value)}
+                          placeholder="e.g., 24543"
+                          className="border-slate-200"
+                          maxLength={32}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-xs text-slate-600">Document Date *</Label>
+                        <Input
+                          type="date"
+                          value={doc.date}
+                          onChange={(e) => updateDocument(index, 'date', e.target.value)}
+                          className="border-slate-200"
+                        />
+                      </div>
+                    </div>
+
+                    {documents.length > 1 && (
+                      <Button
+                        type="button"
+                        onClick={() => removeDocument(index)}
+                        size="icon"
+                        variant="ghost"
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 mt-6"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
