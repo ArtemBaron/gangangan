@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useMutation } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
-import { Send, Download, Copy, Mail } from 'lucide-react';
+import { Send, Download, Copy, Mail, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AmountCurrencySection from '../components/remittance/AmountCurrencySection';
 import BeneficiaryInfoSection from '../components/remittance/BeneficiaryInfoSection';
 import BankDetailsSection from '../components/remittance/BankDetailsSection';
 import TransactionRemarkSection from '../components/remittance/TransactionRemarkSection';
 import InvoiceInfoModal from '../components/remittance/InvoiceInfoModal';
+import { generateCSVData, downloadCSV } from '../components/remittance/utils/csvGenerator';
 
 const INVOICE_EMAIL = 'sales@garudar.id';
 
@@ -89,10 +92,15 @@ export default function CreateOrder() {
       const user = await base44.auth.me();
       const orderNumber = `${user.id.slice(0, 4).toUpperCase()}-${Date.now().toString().slice(-6)}`;
       
+      // Generate CSV data
+      const csvData = generateCSVData(orderData);
+      
       return await base44.entities.RemittanceOrder.create({
         ...orderData,
         order_number: orderNumber,
-        status: 'draft'
+        status: 'created',
+        csv_data: JSON.stringify(csvData),
+        status_history: [{ status: 'created', timestamp: new Date().toISOString() }]
       });
     },
     onSuccess: (data) => {
@@ -118,18 +126,8 @@ export default function CreateOrder() {
   };
 
   const exportToCSV = () => {
-    const csvData = Object.entries(formData)
-      .map(([key, value]) => `${key},${value}`)
-      .join('\n');
-    
-    const blob = new Blob([`Field,Value\n${csvData}`], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `order-${createdOrder?.order_number || 'draft'}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    
+    const csvData = generateCSVData(createdOrder || formData);
+    downloadCSV(csvData, `order_${createdOrder?.order_number || 'draft'}.csv`);
     toast.success('Order exported to CSV');
   };
 
@@ -155,16 +153,27 @@ export default function CreateOrder() {
                 <p className="text-slate-600 mt-1">International fund transfer service</p>
               </div>
             </div>
-            {createdOrder && (
-              <Button
-                onClick={exportToCSV}
-                variant="outline"
-                className="border-slate-300 text-slate-700 hover:bg-slate-50"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Export CSV
-              </Button>
-            )}
+            <div className="flex items-center gap-3">
+              <Link to={createPageUrl('OrderHistory')}>
+                <Button
+                  variant="outline"
+                  className="border-slate-300 text-slate-700 hover:bg-slate-50"
+                >
+                  <History className="w-4 h-4 mr-2" />
+                  Order History
+                </Button>
+              </Link>
+              {createdOrder && (
+                <Button
+                  onClick={exportToCSV}
+                  variant="outline"
+                  className="border-slate-300 text-slate-700 hover:bg-slate-50"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Export CSV
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
