@@ -29,7 +29,7 @@ export default function StaffOrderDrawer({ order, open, onClose, onUpdate }) {
         invoice_flag: order.invoice_flag || false,
         invoice_number: order.invoice_number || '',
         invoice_received: order.invoice_received || false,
-        payment_sent: order.payment_sent || false,
+
         payment_proof: order.payment_proof || false,
         date_payment_proof: order.date_payment_proof || '',
         remuneration_percent: order.remuneration_percent || '',
@@ -259,13 +259,6 @@ export default function StaffOrderDrawer({ order, open, onClose, onUpdate }) {
                   <Switch
                     checked={formData.invoice_received}
                     onCheckedChange={(checked) => setFormData({ ...formData, invoice_received: checked })}
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm">Payment Sent</Label>
-                  <Switch
-                    checked={formData.payment_sent}
-                    onCheckedChange={(checked) => setFormData({ ...formData, payment_sent: checked })}
                   />
                 </div>
                 <div className="flex items-center justify-between">

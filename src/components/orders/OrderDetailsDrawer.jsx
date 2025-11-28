@@ -166,13 +166,31 @@ export default function OrderDetailsDrawer({ order, open, onClose }) {
                 {order.invoice_received ? 'Yes' : 'No'}
               </div>
             </div>
-            <div className={`p-3 rounded-lg border ${order.payment_sent ? 'bg-green-50 border-green-200' : 'bg-slate-50 border-slate-200'}`}>
-              <div className="text-xs text-slate-500">Payment Sent</div>
-              <div className={`font-medium ${order.payment_sent ? 'text-green-700' : 'text-slate-600'}`}>
-                {order.payment_sent ? 'Yes' : 'No'}
+            <div className={`p-3 rounded-lg border ${order.payment_proof ? 'bg-green-50 border-green-200' : 'bg-slate-50 border-slate-200'}`}>
+              <div className="text-xs text-slate-500">Payment Proof</div>
+              <div className={`font-medium ${order.payment_proof ? 'text-green-700' : 'text-slate-600'}`}>
+                {order.payment_proof ? 'Yes' : 'No'}
               </div>
             </div>
           </div>
+
+          {/* Payment Info */}
+          {(order.remuneration_percent || order.sum_to_be_paid) && (
+            <>
+              <Separator />
+              <div>
+                <h4 className="font-medium text-slate-800 mb-2">Payment Info</h4>
+                <div className="bg-teal-50 rounded-lg p-4 border border-teal-200">
+                  {order.remuneration_percent && (
+                    <DetailRow label="Remuneration" value={`${order.remuneration_percent}%`} />
+                  )}
+                  {order.sum_to_be_paid && (
+                    <DetailRow label="Sum to be Paid" value={`${order.sum_to_be_paid.toLocaleString()} ${order.currency_to_be_paid || order.currency}`} />
+                  )}
+                </div>
+              </div>
+            </>
+          )}
 
           <Separator />
 
