@@ -31,7 +31,7 @@ export default function BeneficiaryInfoSection({ formData, onChange, errors, set
     <Card className="border-slate-200 shadow-sm">
       <CardHeader className="border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
         <CardTitle className="flex items-center gap-2 text-slate-800">
-          <UserCheck className="w-5 h-5 text-blue-900" />
+          <UserCheck className="w-5 h-5 text-teal-700" />
           Beneficiary Information
         </CardTitle>
       </CardHeader>
@@ -50,7 +50,7 @@ export default function BeneficiaryInfoSection({ formData, onChange, errors, set
               value={formData.beneficiary_name || ''}
               onChange={(e) => handleNameChange(e.target.value)}
               placeholder="Full name of beneficiary"
-              className={`pl-10 border-slate-200 focus:border-blue-900 focus:ring-blue-900 ${errors.beneficiary_name ? 'border-red-500' : ''}`}
+              className={`pl-10 border-slate-200 focus:border-teal-600 focus:ring-teal-600 ${errors.beneficiary_name ? 'border-red-500' : ''}`}
               maxLength={70}
               required
             />
@@ -78,7 +78,7 @@ export default function BeneficiaryInfoSection({ formData, onChange, errors, set
             value={formData.beneficiary_address || ''}
             onChange={(e) => handleAddressChange(e.target.value)}
             placeholder="Full address"
-            className={`border-slate-200 focus:border-blue-900 focus:ring-blue-900 min-h-[80px] ${errors.beneficiary_address ? 'border-red-500' : ''}`}
+            className={`border-slate-200 focus:border-teal-600 focus:ring-teal-600 min-h-[80px] ${errors.beneficiary_address ? 'border-red-500' : ''}`}
             maxLength={105}
             required
           />

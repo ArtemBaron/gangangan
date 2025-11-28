@@ -108,7 +108,7 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
     <Card className="border-slate-200 shadow-sm">
       <CardHeader className="border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
         <CardTitle className="flex items-center gap-2 text-slate-800">
-          <FileText className="w-5 h-5 text-blue-900" />
+          <FileText className="w-5 h-5 text-teal-700" />
           Transaction Remark
         </CardTitle>
       </CardHeader>
@@ -131,7 +131,7 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
               value={formData.transaction_remark || ''}
               onChange={(e) => handleManualChange(e.target.value)}
               placeholder="Enter transaction remark..."
-              className={`border-slate-200 focus:border-blue-900 focus:ring-blue-900 min-h-[100px] ${errors.transaction_remark ? 'border-red-500' : ''}`}
+              className={`border-slate-200 focus:border-teal-700 focus:ring-teal-700 min-h-[100px] ${errors.transaction_remark ? 'border-red-500' : ''}`}
               maxLength={500}
               required
             />
@@ -162,7 +162,7 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
                   value={formData.remark_payment || 'Payment'}
                   onChange={(e) => onChange({ remark_payment: e.target.value })}
                   placeholder="Payment, partial payment"
-                  className="border-slate-200 focus:border-blue-900 focus:ring-blue-900"
+                  className="border-slate-200 focus:border-teal-700 focus:ring-teal-700"
                 />
               </div>
 
@@ -175,7 +175,7 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
                   value={formData.remark_goods || 'goods'}
                   onChange={(e) => onChange({ remark_goods: e.target.value })}
                   placeholder="goods"
-                  className="border-slate-200 focus:border-blue-900 focus:ring-blue-900"
+                  className="border-slate-200 focus:border-teal-700 focus:ring-teal-700"
                   maxLength={40}
                 />
               </div>
@@ -189,7 +189,7 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
                   onClick={addDocument}
                   size="sm"
                   variant="outline"
-                  className="border-blue-900 text-blue-900 hover:bg-blue-50"
+                  className="border-teal-700 text-teal-700 hover:bg-blue-50"
                 >
                   <Plus className="w-4 h-4 mr-1" />
                   Add Document
@@ -257,12 +257,12 @@ export default function TransactionRemarkSection({ formData, onChange, errors, s
               ))}
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Eye className="w-4 h-4 text-blue-700" />
-                <span className="text-sm font-semibold text-blue-900">Preview:</span>
+                <Eye className="w-4 h-4 text-teal-700" />
+                <span className="text-sm font-semibold text-teal-700">Preview:</span>
               </div>
-              <div className="text-sm text-slate-800 bg-white p-3 rounded border border-blue-100">
+              <div className="text-sm text-slate-800 bg-white p-3 rounded border border-teal-100">
                 {preview || 'Fill in the required fields to see preview...'}
               </div>
               <div className="text-xs text-slate-500 mt-2">

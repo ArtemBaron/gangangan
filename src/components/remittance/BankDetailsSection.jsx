@@ -134,7 +134,7 @@ export default function BankDetailsSection({ formData, onChange, errors, setErro
     <Card className="border-slate-200 shadow-sm">
       <CardHeader className="border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
         <CardTitle className="flex items-center gap-2 text-slate-800">
-          <Building className="w-5 h-5 text-blue-900" />
+          <Building className="w-5 h-5 text-teal-700" />
           Bank Details
         </CardTitle>
       </CardHeader>
@@ -152,7 +152,7 @@ export default function BankDetailsSection({ formData, onChange, errors, setErro
             value={formData.destination_account || ''}
             onChange={(e) => handleAccountChange(e.target.value)}
             placeholder={isIBANCountry ? 'DE89370400440532013000' : 'Account number'}
-            className={`border-slate-200 focus:border-blue-900 focus:ring-blue-900 ${errors.destination_account ? 'border-red-500' : ''}`}
+            className={`border-slate-200 focus:border-teal-600 focus:ring-teal-600 ${errors.destination_account ? 'border-red-500' : ''}`}
             required
           />
           {errors.destination_account && (
@@ -292,7 +292,7 @@ export default function BankDetailsSection({ formData, onChange, errors, setErro
             value={formData.bank_name || ''}
             onChange={(e) => onChange({ bank_name: e.target.value })}
             placeholder="Bank name"
-            className="border-slate-200 focus:border-blue-900 focus:ring-blue-900"
+            className="border-slate-200 focus:border-teal-600 focus:ring-teal-600"
             readOnly={!formData.bank_manual_override}
             disabled={!formData.bank_manual_override && !formData.bank_name}
             required
@@ -306,7 +306,7 @@ export default function BankDetailsSection({ formData, onChange, errors, setErro
             value={formData.bank_address || ''}
             onChange={(e) => onChange({ bank_address: e.target.value })}
             placeholder="Full bank address"
-            className="border-slate-200 focus:border-blue-900 focus:ring-blue-900 min-h-[60px]"
+            className="border-slate-200 focus:border-teal-600 focus:ring-teal-600 min-h-[60px]"
             readOnly={!formData.bank_manual_override}
             disabled={!formData.bank_manual_override && !formData.bank_address}
             required
