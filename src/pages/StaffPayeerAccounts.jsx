@@ -99,16 +99,19 @@ export default function StaffPayeerAccounts() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900">
-      <header className="bg-slate-800 border-b border-slate-700">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-teal-950">
+      <header className="bg-gradient-to-r from-slate-900 via-teal-900 to-slate-900 border-b border-teal-800/50 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link to={createPageUrl('StaffDashboard')}>
-                <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white">
+                <Button variant="ghost" size="icon" className="text-teal-300 hover:text-white hover:bg-teal-800/50">
                   <ArrowLeft className="w-5 h-5" />
                 </Button>
               </Link>
+              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center p-1 shadow">
+                <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a9a123941f81322f5/b1a1be267_gan.png" alt="Logo" className="w-full h-full object-contain" />
+              </div>
               <h1 className="text-xl font-bold text-white">Payeer Accounts</h1>
             </div>
             <Button onClick={openCreateDialog} className="bg-teal-600 hover:bg-teal-700">

@@ -38,19 +38,19 @@ const modules = [
 export default function StaffDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-teal-950">
-      <header className="bg-slate-900/80 backdrop-blur border-b border-teal-900/50">
+      <header className="bg-gradient-to-r from-slate-900 via-teal-900 to-slate-900 border-b border-teal-800/50 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-1">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 shadow-lg">
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a-9a12-3941-f813-22f5/e5ace7e7-f.png" 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a9a123941f81322f5/b1a1be267_gan.png" 
                 alt="Logo" 
                 className="w-full h-full object-contain"
               />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">Staff Administration</h1>
-              <p className="text-slate-400">Manage orders, clients, and operations</p>
+              <p className="text-teal-300">Manage orders, clients, and operations</p>
             </div>
           </div>
         </div>

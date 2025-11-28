@@ -144,20 +144,20 @@ export default function OrderHistory() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+      <header className="bg-gradient-to-r from-slate-900 via-teal-900 to-slate-900 sticky top-0 z-10 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center p-1 border border-slate-200">
+          <div className="flex items-center justify-between h-20">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center p-2 shadow-md">
                 <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a-9a12-3941-f813-22f5/e5ace7e7-f.png" 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a9a123941f81322f5/b1a1be267_gan.png" 
                   alt="Logo" 
                   className="w-full h-full object-contain"
                 />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-blue-900">Order History</h1>
-                <p className="text-xs text-slate-500">Manage your remittance orders</p>
+                <h1 className="text-2xl font-bold text-white">Order History</h1>
+                <p className="text-sm text-teal-300">Manage your remittance orders</p>
               </div>
             </div>
             <div className="flex items-center gap-3">

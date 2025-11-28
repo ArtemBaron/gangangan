@@ -139,25 +139,27 @@ export default function CreateOrder() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       {/* Header */}
-      <div className="bg-white shadow-xl border-b-4 border-teal-700">
+      <div className="bg-gradient-to-r from-slate-900 via-teal-900 to-slate-900 shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a9a123941f81322f5/c4fdf42c3_ee439192-547e-43ba-88b9-6135cbdd7509.JPG" 
-                alt="PT Garuda Arma Nusa" 
-                className="h-16 md:h-20 w-auto object-contain"
-              />
+            <div className="flex items-center gap-5">
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-xl flex items-center justify-center p-2 shadow-lg">
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a9a123941f81322f5/b1a1be267_gan.png" 
+                  alt="PT Garuda Arma Nusa" 
+                  className="w-full h-full object-contain"
+                />
+              </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-800">Create Payment Order</h1>
-                <p className="text-slate-600 mt-1">International fund transfer service</p>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">Create Payment Order</h1>
+                <p className="text-teal-300 mt-1">International fund transfer service</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <Link to={createPageUrl('OrderHistory')}>
                 <Button
                   variant="outline"
-                  className="border-slate-300 text-slate-700 hover:bg-slate-50"
+                  className="border-teal-400 text-teal-100 hover:bg-teal-800/50 bg-transparent"
                 >
                   <History className="w-4 h-4 mr-2" />
                   Order History
@@ -166,8 +168,7 @@ export default function CreateOrder() {
               {createdOrder && (
                 <Button
                   onClick={exportToCSV}
-                  variant="outline"
-                  className="border-slate-300 text-slate-700 hover:bg-slate-50"
+                  className="bg-orange-500 hover:bg-orange-600 text-white"
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Export CSV
