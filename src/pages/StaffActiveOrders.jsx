@@ -12,14 +12,15 @@ import { Badge } from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
-import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Search, FileDown, CheckCircle, Trash2, MoreVertical, Eye, AlertTriangle, X } from 'lucide-react';
+import { ArrowLeft, Search, FileDown, CheckCircle, Trash2, Eye, AlertTriangle, X, Pencil } from 'lucide-react';
+import {
+  Popover, PopoverContent, PopoverTrigger
+} from "@/components/ui/popover";
 import OrderStatusBadge from '@/components/orders/OrderStatusBadge';
 import StaffOrderDrawer from '@/components/staff/StaffOrderDrawer';
 import { generateTxtInstruction } from '@/components/staff/utils/instructionGenerator';
@@ -272,7 +273,9 @@ export default function StaffActiveOrders() {
                 <TableHead className="text-slate-300">Bank/BIC</TableHead>
                 <TableHead className="text-slate-300">Remark</TableHead>
                 <TableHead className="text-slate-300">Inv</TableHead>
-                <TableHead className="text-slate-300">Pay</TableHead>
+                <TableHead className="text-slate-300">Proof</TableHead>
+                <TableHead className="text-slate-300">Remun%</TableHead>
+                <TableHead className="text-slate-300">To Pay</TableHead>
                 <TableHead className="text-slate-300">Status</TableHead>
                 <TableHead className="text-slate-300">Last Export</TableHead>
                 <TableHead className="text-slate-300 text-right">Actions</TableHead>
@@ -280,9 +283,9 @@ export default function StaffActiveOrders() {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={13} className="text-center text-slate-400 py-8">Loading...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={15} className="text-center text-slate-400 py-8">Loading...</TableCell></TableRow>
               ) : filteredOrders.length === 0 ? (
-                <TableRow><TableCell colSpan={13} className="text-center text-slate-400 py-8">No active orders</TableCell></TableRow>
+                <TableRow><TableCell colSpan={15} className="text-center text-slate-400 py-8">No active orders</TableCell></TableRow>
               ) : filteredOrders.map((order) => (
                 <TableRow 
                   key={order.id} 
@@ -323,44 +326,78 @@ export default function StaffActiveOrders() {
                     {order.transaction_remark?.slice(0, 40)}
                   </TableCell>
                   <TableCell>
-                    <Badge className={order.invoice_received ? 'bg-emerald-600' : 'bg-slate-600'}>
+                    <Badge 
+                      className={`cursor-pointer hover:opacity-80 ${order.invoice_received ? 'bg-emerald-600' : 'bg-slate-600'}`}
+                      onClick={() => {
+                        updateMutation.mutate({ id: order.id, data: { invoice_received: !order.invoice_received } });
+                        toast.success(`Invoice ${!order.invoice_received ? 'received' : 'pending'}`);
+                      }}
+                    >
                       {order.invoice_received ? 'Y' : 'N'}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge className={order.payment_proof ? 'bg-emerald-600' : 'bg-slate-600'}>
+                    <Badge 
+                      className={`cursor-pointer hover:opacity-80 ${order.payment_proof ? 'bg-emerald-600' : 'bg-slate-600'}`}
+                      onClick={() => {
+                        const newProof = !order.payment_proof;
+                        updateMutation.mutate({ 
+                          id: order.id, 
+                          data: { 
+                            payment_proof: newProof,
+                            date_payment_proof: newProof ? new Date().toISOString().split('T')[0] : '',
+                            status: newProof && order.status === 'pending_payment' ? 'on_execution' : order.status,
+                            status_history: newProof && order.status === 'pending_payment' 
+                              ? [...(order.status_history || []), { status: 'on_execution', timestamp: new Date().toISOString() }]
+                              : order.status_history
+                          } 
+                        });
+                        toast.success(`Payment proof ${newProof ? 'confirmed' : 'removed'}`);
+                      }}
+                    >
                       {order.payment_proof ? 'Y' : 'N'}
                     </Badge>
                   </TableCell>
+                  <TableCell className="text-slate-300 text-sm">
+                    {order.remuneration_percent ? `${order.remuneration_percent}%` : '-'}
+                  </TableCell>
+                  <TableCell className="text-white text-sm font-medium">
+                    {order.sum_to_be_paid ? `${order.sum_to_be_paid.toLocaleString()} ${order.currency_to_be_paid || order.currency}` : '-'}
+                  </TableCell>
                   <TableCell>
-                    <OrderStatusBadge status={order.status} />
+                    <Popover>
+                      <PopoverTrigger>
+                        <div className="cursor-pointer hover:opacity-80">
+                          <OrderStatusBadge status={order.status} />
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-48 p-1 bg-slate-800 border-slate-700">
+                        <div className="space-y-1">
+                          {ALL_STATUSES.map(s => (
+                            <button
+                              key={s}
+                              onClick={() => handleStatusChange(order, s)}
+                              className={`w-full text-left px-3 py-1.5 text-sm rounded hover:bg-slate-700 text-white ${order.status === s ? 'bg-slate-700' : ''}`}
+                            >
+                              {s.replace('_', ' ').toUpperCase()}
+                            </button>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </TableCell>
                   <TableCell className="text-slate-400 text-xs">
                     {order.last_download ? moment(order.last_download).format('DD/MM/YY HH:mm') : '-'}
                   </TableCell>
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white">
-                          <MoreVertical className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700">
-                        <DropdownMenuItem onClick={() => openDrawer(order)} className="text-white hover:bg-slate-700">
-                          <Eye className="w-4 h-4 mr-2" /> View / Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator className="bg-slate-700" />
-                        {ALL_STATUSES.map(s => (
-                          <DropdownMenuItem 
-                            key={s}
-                            onClick={() => handleStatusChange(order, s)} 
-                            className={`text-white hover:bg-slate-700 ${order.status === s ? 'bg-slate-700' : ''}`}
-                          >
-                            Set: {s.replace('_', ' ').toUpperCase()}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <Button 
+                      onClick={() => openDrawer(order)} 
+                      size="sm"
+                      className="bg-teal-600 hover:bg-teal-700 text-white"
+                    >
+                      <Pencil className="w-3.5 h-3.5 mr-1" />
+                      Edit
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
