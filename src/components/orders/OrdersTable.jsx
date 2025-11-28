@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Eye, Download, Trash2, XCircle } from 'lucide-react';
+import { Eye, Trash2, XCircle } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,8 +22,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import moment from 'moment';
 import OrderStatusBadge from './OrderStatusBadge';
-import { generateCSVData, downloadCSV } from '../remittance/utils/csvGenerator';
-import { toast } from 'sonner';
 
 function maskAccount(account) {
   if (!account || account.length < 8) return account;
@@ -36,13 +34,6 @@ function truncateText(text, maxLength = 30) {
 }
 
 export default function OrdersTable({ orders, onViewDetails, onDelete, onCancel }) {
-  const handleDownloadCSV = (order, e) => {
-    e.stopPropagation();
-    const csvData = generateCSVData(order);
-    downloadCSV(csvData, `order_${order.order_number}.csv`);
-    toast.success('CSV downloaded');
-  };
-
   if (!orders || orders.length === 0) {
     return null;
   }
@@ -129,14 +120,7 @@ export default function OrdersTable({ orders, onViewDetails, onDelete, onCancel 
                     >
                       <Eye className="w-4 h-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={(e) => handleDownloadCSV(order, e)}
-                      className="h-8 w-8"
-                    >
-                      <Download className="w-4 h-4" />
-                    </Button>
+
                     {order.status !== 'cancelled' && order.status !== 'released' && (
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
