@@ -170,7 +170,7 @@ export default function OrderHistory() {
                 Export CSV
               </Button>
               <Link to={createPageUrl('CreateOrder')}>
-                <Button className="bg-blue-900 hover:bg-blue-800">
+                <Button className="bg-teal-700 hover:bg-teal-600">
                   <Plus className="w-4 h-4 mr-2" />
                   Create Order
                 </Button>
@@ -220,7 +220,7 @@ export default function OrderHistory() {
             </p>
             {orders.length === 0 ? (
               <Link to={createPageUrl('CreateOrder')}>
-                <Button className="bg-blue-900 hover:bg-blue-800">
+                <Button className="bg-teal-700 hover:bg-teal-600">
                   <Plus className="w-4 h-4 mr-2" />
                   Create Order
                 </Button>
