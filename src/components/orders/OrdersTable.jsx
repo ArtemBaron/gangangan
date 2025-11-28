@@ -8,7 +8,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Eye, Download } from 'lucide-react';
+import { Eye, Download, Trash2, XCircle } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import moment from 'moment';
 import OrderStatusBadge from './OrderStatusBadge';
 import { generateCSVData, downloadCSV } from '../remittance/utils/csvGenerator';
@@ -24,7 +35,7 @@ function truncateText(text, maxLength = 30) {
   return text.substring(0, maxLength) + '...';
 }
 
-export default function OrdersTable({ orders, onViewDetails }) {
+export default function OrdersTable({ orders, onViewDetails, onDelete, onCancel }) {
   const handleDownloadCSV = (order, e) => {
     e.stopPropagation();
     const csvData = generateCSVData(order);
@@ -126,6 +137,66 @@ export default function OrdersTable({ orders, onViewDetails }) {
                     >
                       <Download className="w-4 h-4" />
                     </Button>
+                    {order.status !== 'cancelled' && order.status !== 'released' && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => e.stopPropagation()}
+                            className="h-8 w-8 text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                          >
+                            <XCircle className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Cancel Order</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to cancel order #{order.order_number}? This action can be undone by admin.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>No, keep it</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => onCancel(order)}
+                              className="bg-orange-600 hover:bg-orange-700"
+                            >
+                              Yes, cancel order
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => e.stopPropagation()}
+                          className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Order</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete order #{order.order_number}? This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => onDelete(order)}
+                            className="bg-red-600 hover:bg-red-700"
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </TableCell>
               </TableRow>

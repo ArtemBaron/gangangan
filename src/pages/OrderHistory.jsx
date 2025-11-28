@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,8 @@ export default function OrderHistory() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const queryClient = useQueryClient();
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ['remittance-orders'],
@@ -109,6 +112,33 @@ export default function OrderHistory() {
     if (filteredOrders.length > 0) {
       exportOrdersToCSV(filteredOrders, `orders_export_${new Date().toISOString().split('T')[0]}.csv`);
     }
+  };
+
+  const deleteMutation = useMutation({
+    mutationFn: (order) => base44.entities.RemittanceOrder.delete(order.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['remittance-orders'] });
+      toast.success('Order deleted successfully');
+    },
+  });
+
+  const cancelMutation = useMutation({
+    mutationFn: (order) => base44.entities.RemittanceOrder.update(order.id, {
+      status: 'cancelled',
+      status_history: [...(order.status_history || []), { status: 'cancelled', timestamp: new Date().toISOString() }]
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['remittance-orders'] });
+      toast.success('Order cancelled');
+    },
+  });
+
+  const handleDelete = (order) => {
+    deleteMutation.mutate(order);
+  };
+
+  const handleCancel = (order) => {
+    cancelMutation.mutate(order);
   };
 
   return (
@@ -206,6 +236,8 @@ export default function OrderHistory() {
             <OrdersTable 
               orders={paginatedOrders} 
               onViewDetails={handleViewDetails}
+              onDelete={handleDelete}
+              onCancel={handleCancel}
             />
 
             {/* Pagination */}

@@ -11,7 +11,8 @@ const STATUSES = [
   { value: 'rejected', label: 'Rejected' },
   { value: 'pending_payment', label: 'Pending Payment' },
   { value: 'on_execution', label: 'On Execution' },
-  { value: 'released', label: 'Released' }
+  { value: 'released', label: 'Released' },
+  { value: 'cancelled', label: 'Cancelled' }
 ];
 
 const CURRENCIES = [
