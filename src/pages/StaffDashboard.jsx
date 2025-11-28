@@ -1,0 +1,78 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Users, FileText, CheckCircle, Settings, Database } from 'lucide-react';
+
+const modules = [
+  {
+    title: 'Clients',
+    description: 'Manage client accounts',
+    icon: Users,
+    page: 'StaffClients',
+    color: 'bg-blue-500'
+  },
+  {
+    title: 'Active Orders',
+    description: 'View and process active orders',
+    icon: FileText,
+    page: 'StaffActiveOrders',
+    color: 'bg-orange-500'
+  },
+  {
+    title: 'Executed Orders',
+    description: 'View completed orders',
+    icon: CheckCircle,
+    page: 'StaffExecutedOrders',
+    color: 'bg-green-500'
+  },
+  {
+    title: 'Payeer Accounts',
+    description: 'Manage payer accounts by currency',
+    icon: Database,
+    page: 'StaffPayeerAccounts',
+    color: 'bg-purple-500'
+  }
+];
+
+export default function StaffDashboard() {
+  return (
+    <div className="min-h-screen bg-slate-900">
+      <header className="bg-slate-800 border-b border-slate-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-1">
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a-9a12-3941-f813-22f5/e5ace7e7-f.png" 
+                alt="Logo" 
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white">Staff Administration</h1>
+              <p className="text-slate-400">Manage orders, clients, and operations</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {modules.map((module) => (
+            <Link key={module.page} to={createPageUrl(module.page)}>
+              <Card className="bg-slate-800 border-slate-700 hover:border-slate-500 transition-all cursor-pointer h-full">
+                <CardHeader>
+                  <div className={`w-12 h-12 ${module.color} rounded-lg flex items-center justify-center mb-3`}>
+                    <module.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <CardTitle className="text-white">{module.title}</CardTitle>
+                  <CardDescription className="text-slate-400">{module.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </main>
+    </div>
+  );
+}
