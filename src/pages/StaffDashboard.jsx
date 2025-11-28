@@ -10,7 +10,7 @@ const modules = [
     description: 'Manage client accounts',
     icon: Users,
     page: 'StaffClients',
-    color: 'bg-blue-500'
+    color: 'bg-teal-600'
   },
   {
     title: 'Active Orders',
@@ -24,21 +24,21 @@ const modules = [
     description: 'View completed orders',
     icon: CheckCircle,
     page: 'StaffExecutedOrders',
-    color: 'bg-green-500'
+    color: 'bg-emerald-600'
   },
   {
     title: 'Payeer Accounts',
     description: 'Manage payer accounts by currency',
     icon: Database,
     page: 'StaffPayeerAccounts',
-    color: 'bg-purple-500'
+    color: 'bg-cyan-700'
   }
 ];
 
 export default function StaffDashboard() {
   return (
-    <div className="min-h-screen bg-slate-900">
-      <header className="bg-slate-800 border-b border-slate-700">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-teal-950">
+      <header className="bg-slate-900/80 backdrop-blur border-b border-teal-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-1">
@@ -60,7 +60,7 @@ export default function StaffDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {modules.map((module) => (
             <Link key={module.page} to={createPageUrl(module.page)}>
-              <Card className="bg-slate-800 border-slate-700 hover:border-slate-500 transition-all cursor-pointer h-full">
+              <Card className="bg-slate-800/80 border-slate-700 hover:border-teal-600 hover:shadow-lg hover:shadow-teal-900/20 transition-all cursor-pointer h-full">
                 <CardHeader>
                   <div className={`w-12 h-12 ${module.color} rounded-lg flex items-center justify-center mb-3`}>
                     <module.icon className="w-6 h-6 text-white" />

@@ -68,7 +68,7 @@ export default function StaffExecutedOrders() {
               </Button>
             </Link>
             <h1 className="text-xl font-bold text-white">Executed Orders</h1>
-            <Badge className="bg-green-600">{executedOrders.length}</Badge>
+            <Badge className="bg-emerald-600">{executedOrders.length}</Badge>
           </div>
         </div>
       </header>

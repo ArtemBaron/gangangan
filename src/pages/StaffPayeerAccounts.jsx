@@ -111,7 +111,7 @@ export default function StaffPayeerAccounts() {
               </Link>
               <h1 className="text-xl font-bold text-white">Payeer Accounts</h1>
             </div>
-            <Button onClick={openCreateDialog} className="bg-purple-600 hover:bg-purple-700">
+            <Button onClick={openCreateDialog} className="bg-teal-600 hover:bg-teal-700">
               <Plus className="w-4 h-4 mr-2" />
               Add Account
             </Button>
@@ -144,7 +144,7 @@ export default function StaffPayeerAccounts() {
                 <TableRow key={account.id} className="border-slate-700 hover:bg-slate-750">
                   <TableCell className="text-white">{getClientName(account.client_id)}</TableCell>
                   <TableCell>
-                    <Badge className="bg-blue-600">{account.currency}</Badge>
+                    <Badge className="bg-orange-500">{account.currency}</Badge>
                   </TableCell>
                   <TableCell className="text-slate-300 font-mono">{account.id_payeer || '-'}</TableCell>
                   <TableCell className="text-white font-mono">{account.account_number}</TableCell>
@@ -238,7 +238,7 @@ export default function StaffPayeerAccounts() {
             <Button variant="outline" onClick={closeDialog} className="border-slate-600 text-slate-300">
               Cancel
             </Button>
-            <Button onClick={handleSubmit} disabled={saveMutation.isPending} className="bg-purple-600 hover:bg-purple-700">
+            <Button onClick={handleSubmit} disabled={saveMutation.isPending} className="bg-teal-600 hover:bg-teal-700">
               {saveMutation.isPending ? 'Saving...' : 'Save'}
             </Button>
           </DialogFooter>

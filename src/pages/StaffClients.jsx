@@ -109,7 +109,7 @@ export default function StaffClients() {
               </Link>
               <h1 className="text-xl font-bold text-white">Client Management</h1>
             </div>
-            <Button onClick={openCreateDialog} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={openCreateDialog} className="bg-teal-600 hover:bg-teal-700">
               <Plus className="w-4 h-4 mr-2" />
               Add Client
             </Button>
@@ -245,7 +245,7 @@ export default function StaffClients() {
             <Button variant="outline" onClick={closeDialog} className="border-slate-600 text-slate-300">
               Cancel
             </Button>
-            <Button onClick={handleSubmit} disabled={saveMutation.isPending} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleSubmit} disabled={saveMutation.isPending} className="bg-teal-600 hover:bg-teal-700">
               {saveMutation.isPending ? 'Saving...' : 'Save'}
             </Button>
           </DialogFooter>

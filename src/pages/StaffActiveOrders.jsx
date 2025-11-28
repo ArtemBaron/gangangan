@@ -171,17 +171,17 @@ export default function StaffActiveOrders() {
                 </Button>
               </Link>
               <h1 className="text-xl font-bold text-white">Active Orders</h1>
-              <Badge className="bg-blue-600">{activeOrders.length}</Badge>
+              <Badge className="bg-orange-500">{activeOrders.length}</Badge>
             </div>
             <div className="flex items-center gap-3">
               {selectedIds.size > 0 && (
                 <>
                   <span className="text-slate-400 text-sm">{selectedIds.size} selected</span>
-                  <Button onClick={handleCreateInstruction} className="bg-blue-600 hover:bg-blue-700">
+                  <Button onClick={handleCreateInstruction} className="bg-teal-600 hover:bg-teal-700">
                     <FileDown className="w-4 h-4 mr-2" />
                     Create Instruction
                   </Button>
-                  <Button onClick={handleMarkAsExecuted} className="bg-green-600 hover:bg-green-700">
+                  <Button onClick={handleMarkAsExecuted} className="bg-emerald-600 hover:bg-emerald-700">
                     <CheckCircle className="w-4 h-4 mr-2" />
                     Mark Executed
                   </Button>

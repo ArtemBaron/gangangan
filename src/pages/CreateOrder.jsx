@@ -139,7 +139,7 @@ export default function CreateOrder() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       {/* Header */}
-      <div className="bg-white shadow-xl border-b-4 border-blue-900">
+      <div className="bg-white shadow-xl border-b-4 border-teal-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
@@ -243,7 +243,7 @@ export default function CreateOrder() {
             <Button
               onClick={handleSubmit}
               disabled={createOrderMutation.isPending}
-              className="bg-gradient-to-r from-blue-900 to-slate-800 hover:from-blue-800 hover:to-slate-700 text-white font-semibold px-8 py-6 text-base shadow-lg"
+              className="bg-gradient-to-r from-teal-700 to-cyan-800 hover:from-teal-600 hover:to-cyan-700 text-white font-semibold px-8 py-6 text-base shadow-lg"
             >
               {createOrderMutation.isPending ? (
                 <>Processing...</>

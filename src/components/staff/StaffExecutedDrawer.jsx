@@ -146,7 +146,7 @@ export default function StaffExecutedDrawer({ order, open, onClose, onUpdate }) 
             <Button variant="outline" onClick={onClose} className="flex-1 border-slate-600 text-slate-300">
               Cancel
             </Button>
-            <Button onClick={handleSave} className="flex-1 bg-green-600 hover:bg-green-700">
+            <Button onClick={handleSave} className="flex-1 bg-teal-600 hover:bg-teal-700">
               Save Changes
             </Button>
           </div>
