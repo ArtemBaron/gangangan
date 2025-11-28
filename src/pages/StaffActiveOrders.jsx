@@ -13,21 +13,29 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { ArrowLeft, Search, FileDown, CheckCircle, Trash2, MoreVertical, Eye } from 'lucide-react';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
+} from "@/components/ui/alert-dialog";
+import { ArrowLeft, Search, FileDown, CheckCircle, Trash2, MoreVertical, Eye, AlertTriangle, X } from 'lucide-react';
 import OrderStatusBadge from '@/components/orders/OrderStatusBadge';
 import StaffOrderDrawer from '@/components/staff/StaffOrderDrawer';
 import { generateTxtInstruction } from '@/components/staff/utils/instructionGenerator';
+import moment from 'moment';
 
 const ACTIVE_STATUSES = ['created', 'draft', 'check', 'pending_payment', 'on_execution'];
+const ALL_STATUSES = ['created', 'draft', 'check', 'rejected', 'pending_payment', 'on_execution', 'released', 'cancelled'];
 
 export default function StaffActiveOrders() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [currencyFilter, setCurrencyFilter] = useState('all');
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -43,25 +51,37 @@ export default function StaffActiveOrders() {
   const filteredOrders = useMemo(() => {
     return activeOrders.filter(order => {
       if (statusFilter !== 'all' && order.status !== statusFilter) return false;
+      if (currencyFilter !== 'all' && order.currency !== currencyFilter) return false;
       if (search) {
         const s = search.toLowerCase();
         return order.order_number?.toLowerCase().includes(s) ||
                order.client_name?.toLowerCase().includes(s) ||
+               order.client_id?.toLowerCase().includes(s) ||
                order.beneficiary_name?.toLowerCase().includes(s) ||
                order.bic?.toLowerCase().includes(s);
       }
       return true;
     });
-  }, [activeOrders, statusFilter, search]);
+  }, [activeOrders, statusFilter, currencyFilter, search]);
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.RemittanceOrder.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['staff-active-orders'] }),
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: (ids) => Promise.all(ids.map(id => base44.entities.RemittanceOrder.delete(id))),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['staff-active-orders'] });
+      toast.success('Orders deleted');
+      setSelectedIds(new Set());
+      setDeleteDialogOpen(false);
+    },
+  });
+
   const handleSelectAll = (checked) => {
     if (checked) {
-      setSelectedIds(new Set(filteredOrders.filter(o => !o.non_mandiri_execution).map(o => o.id)));
+      setSelectedIds(new Set(filteredOrders.map(o => o.id)));
     } else {
       setSelectedIds(new Set());
     }
@@ -89,7 +109,7 @@ export default function StaffActiveOrders() {
   const handleCreateInstruction = () => {
     const selectedOrders = filteredOrders.filter(o => selectedIds.has(o.id) && !o.non_mandiri_execution);
     if (selectedOrders.length === 0) {
-      toast.error('No valid orders selected');
+      toast.error('No valid orders selected (non-Mandiri orders excluded)');
       return;
     }
 
@@ -104,7 +124,6 @@ export default function StaffActiveOrders() {
     a.click();
     URL.revokeObjectURL(url);
 
-    // Update last_download for all selected orders
     selectedOrders.forEach(order => {
       updateMutation.mutate({
         id: order.id,
@@ -144,16 +163,6 @@ export default function StaffActiveOrders() {
     setSelectedIds(new Set());
   };
 
-  const handleDeleteSelected = () => {
-    const selectedOrders = filteredOrders.filter(o => selectedIds.has(o.id));
-    selectedOrders.forEach(order => {
-      base44.entities.RemittanceOrder.delete(order.id);
-    });
-    queryClient.invalidateQueries({ queryKey: ['staff-active-orders'] });
-    toast.success(`${selectedOrders.length} orders deleted`);
-    setSelectedIds(new Set());
-  };
-
   const openDrawer = (order) => {
     setSelectedOrder(order);
     setDrawerOpen(true);
@@ -182,13 +191,13 @@ export default function StaffActiveOrders() {
                   <span className="text-slate-400 text-sm">{selectedIds.size} selected</span>
                   <Button onClick={handleCreateInstruction} className="bg-teal-600 hover:bg-teal-700">
                     <FileDown className="w-4 h-4 mr-2" />
-                    Create Instruction
+                    Create TXT Instruction
                   </Button>
                   <Button onClick={handleMarkAsExecuted} className="bg-emerald-600 hover:bg-emerald-700">
                     <CheckCircle className="w-4 h-4 mr-2" />
                     Mark Executed
                   </Button>
-                  <Button onClick={handleDeleteSelected} variant="destructive">
+                  <Button onClick={() => setDeleteDialogOpen(true)} variant="destructive">
                     <Trash2 className="w-4 h-4 mr-2" />
                     Delete
                   </Button>
@@ -200,11 +209,11 @@ export default function StaffActiveOrders() {
       </header>
 
       <main className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex items-center gap-4 mb-6">
+        <div className="flex items-center gap-4 mb-6 flex-wrap">
           <div className="relative w-72">
             <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
             <Input
-              placeholder="Search orders..."
+              placeholder="Search by order, client, beneficiary, BIC..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-9 bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
@@ -216,13 +225,33 @@ export default function StaffActiveOrders() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="created">Created</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-              <SelectItem value="check">Check</SelectItem>
-              <SelectItem value="pending_payment">Pending Payment</SelectItem>
-              <SelectItem value="on_execution">On Execution</SelectItem>
+              {ACTIVE_STATUSES.map(s => (
+                <SelectItem key={s} value={s}>{s.replace('_', ' ').toUpperCase()}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
+          <Select value={currencyFilter} onValueChange={setCurrencyFilter}>
+            <SelectTrigger className="w-32 bg-slate-800 border-slate-700 text-white">
+              <SelectValue placeholder="Currency" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="USD">USD</SelectItem>
+              <SelectItem value="EUR">EUR</SelectItem>
+              <SelectItem value="CNY">CNY</SelectItem>
+              <SelectItem value="IDR">IDR</SelectItem>
+            </SelectContent>
+          </Select>
+          {(statusFilter !== 'all' || currencyFilter !== 'all' || search) && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => { setStatusFilter('all'); setCurrencyFilter('all'); setSearch(''); }}
+              className="text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4 mr-1" /> Clear
+            </Button>
+          )}
         </div>
 
         <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-x-auto">
@@ -231,7 +260,7 @@ export default function StaffActiveOrders() {
               <TableRow className="border-slate-700 hover:bg-slate-800">
                 <TableHead className="w-10">
                   <Checkbox
-                    checked={selectedIds.size === filteredOrders.filter(o => !o.non_mandiri_execution).length && filteredOrders.length > 0}
+                    checked={selectedIds.size === filteredOrders.length && filteredOrders.length > 0}
                     onCheckedChange={handleSelectAll}
                   />
                 </TableHead>
@@ -239,9 +268,11 @@ export default function StaffActiveOrders() {
                 <TableHead className="text-slate-300">Client</TableHead>
                 <TableHead className="text-slate-300">Amount</TableHead>
                 <TableHead className="text-slate-300">Beneficiary</TableHead>
+                <TableHead className="text-slate-300">Account</TableHead>
                 <TableHead className="text-slate-300">Bank/BIC</TableHead>
-                <TableHead className="text-slate-300">Invoice</TableHead>
-                <TableHead className="text-slate-300">Payment</TableHead>
+                <TableHead className="text-slate-300">Remark</TableHead>
+                <TableHead className="text-slate-300">Inv</TableHead>
+                <TableHead className="text-slate-300">Pay</TableHead>
                 <TableHead className="text-slate-300">Status</TableHead>
                 <TableHead className="text-slate-300">Last Export</TableHead>
                 <TableHead className="text-slate-300 text-right">Actions</TableHead>
@@ -249,43 +280,63 @@ export default function StaffActiveOrders() {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={11} className="text-center text-slate-400 py-8">Loading...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={13} className="text-center text-slate-400 py-8">Loading...</TableCell></TableRow>
               ) : filteredOrders.length === 0 ? (
-                <TableRow><TableCell colSpan={11} className="text-center text-slate-400 py-8">No active orders</TableCell></TableRow>
+                <TableRow><TableCell colSpan={13} className="text-center text-slate-400 py-8">No active orders</TableCell></TableRow>
               ) : filteredOrders.map((order) => (
-                <TableRow key={order.id} className="border-slate-700 hover:bg-slate-750">
+                <TableRow 
+                  key={order.id} 
+                  className={`border-slate-700 hover:bg-slate-750 ${order.non_mandiri_execution ? 'opacity-60' : ''}`}
+                >
                   <TableCell>
                     <Checkbox
                       checked={selectedIds.has(order.id)}
                       onCheckedChange={(checked) => handleSelectOne(order.id, checked)}
-                      disabled={order.non_mandiri_execution}
                     />
                   </TableCell>
-                  <TableCell className="text-white font-mono text-sm">{order.order_number}</TableCell>
-                  <TableCell className="text-slate-300">{order.client_name || '-'}</TableCell>
+                  <TableCell className="text-white font-mono text-sm">
+                    <div className="flex items-center gap-2">
+                      {order.order_number}
+                      {order.invoice_flag && <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />}
+                      {order.non_mandiri_execution && <Badge className="bg-slate-600 text-xs">Non-M</Badge>}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-slate-300">
+                    <div className="text-sm">{order.client_name || '-'}</div>
+                    <div className="text-xs text-slate-500 font-mono">{order.client_id}</div>
+                  </TableCell>
                   <TableCell className="text-white font-medium">
                     {order.amount?.toLocaleString()} {order.currency}
                   </TableCell>
-                  <TableCell className="text-slate-300 max-w-[150px] truncate">{order.beneficiary_name}</TableCell>
+                  <TableCell className="text-slate-300 max-w-[120px]">
+                    <div className="truncate text-sm">{order.beneficiary_name}</div>
+                    <div className="text-xs text-slate-500 truncate">{order.beneficiary_address?.slice(0, 30)}</div>
+                  </TableCell>
+                  <TableCell className="text-slate-400 font-mono text-xs max-w-[100px] truncate">
+                    {order.destination_account}
+                  </TableCell>
                   <TableCell className="text-slate-400 text-sm">
-                    <div>{order.bank_name?.slice(0, 20)}</div>
+                    <div className="truncate max-w-[100px]">{order.bank_name}</div>
                     <div className="font-mono text-xs">{order.bic}</div>
                   </TableCell>
+                  <TableCell className="text-slate-400 text-xs max-w-[120px] truncate">
+                    {order.transaction_remark?.slice(0, 40)}
+                  </TableCell>
                   <TableCell>
-                    <Badge className={order.invoice_received ? 'bg-green-600' : 'bg-slate-600'}>
+                    <Badge className={order.invoice_received ? 'bg-emerald-600' : 'bg-slate-600'}>
                       {order.invoice_received ? 'Y' : 'N'}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge className={order.payment_proof ? 'bg-green-600' : 'bg-slate-600'}>
+                    <Badge className={order.payment_proof ? 'bg-emerald-600' : 'bg-slate-600'}>
                       {order.payment_proof ? 'Y' : 'N'}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <OrderStatusBadge status={order.status} />
                   </TableCell>
-                  <TableCell className="text-slate-400 text-sm">
-                    {order.last_download ? new Date(order.last_download).toLocaleDateString() : '-'}
+                  <TableCell className="text-slate-400 text-xs">
+                    {order.last_download ? moment(order.last_download).format('DD/MM/YY HH:mm') : '-'}
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
@@ -296,20 +347,18 @@ export default function StaffActiveOrders() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700">
                         <DropdownMenuItem onClick={() => openDrawer(order)} className="text-white hover:bg-slate-700">
-                          <Eye className="w-4 h-4 mr-2" /> View Details
+                          <Eye className="w-4 h-4 mr-2" /> View / Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleStatusChange(order, 'check')} className="text-white hover:bg-slate-700">
-                          Set: Check
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleStatusChange(order, 'on_execution')} className="text-white hover:bg-slate-700">
-                          Set: On Execution
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleStatusChange(order, 'rejected')} className="text-red-400 hover:bg-slate-700">
-                          Set: Rejected
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleStatusChange(order, 'released')} className="text-green-400 hover:bg-slate-700">
-                          Set: Released
-                        </DropdownMenuItem>
+                        <DropdownMenuSeparator className="bg-slate-700" />
+                        {ALL_STATUSES.map(s => (
+                          <DropdownMenuItem 
+                            key={s}
+                            onClick={() => handleStatusChange(order, s)} 
+                            className={`text-white hover:bg-slate-700 ${order.status === s ? 'bg-slate-700' : ''}`}
+                          >
+                            Set: {s.replace('_', ' ').toUpperCase()}
+                          </DropdownMenuItem>
+                        ))}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -329,6 +378,26 @@ export default function StaffActiveOrders() {
           toast.success('Order updated');
         }}
       />
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {selectedIds.size} Order(s)</AlertDialogTitle>
+            <AlertDialogDescription className="text-slate-400">
+              Are you sure you want to delete the selected orders? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-slate-600 text-slate-300 hover:bg-slate-700">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteMutation.mutate([...selectedIds])}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
