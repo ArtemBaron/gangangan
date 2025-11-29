@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
@@ -15,6 +14,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Plus, Pencil, Trash2 } from 'lucide-react';
 
 const CURRENCIES = ['USD', 'EUR', 'CNY', 'IDR'];
@@ -23,10 +23,11 @@ export default function StaffPayeerAccounts() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const [formData, setFormData] = useState({
-    client_id: '',
     currency: 'USD',
     id_payeer: '',
-    account_number: ''
+    account_number: '',
+    account_name: '',
+    active: true
   });
 
   const queryClient = useQueryClient();
@@ -34,11 +35,6 @@ export default function StaffPayeerAccounts() {
   const { data: accounts = [], isLoading } = useQuery({
     queryKey: ['payeer-accounts'],
     queryFn: () => base44.entities.PayeerAccount.list('-created_date'),
-  });
-
-  const { data: clients = [] } = useQuery({
-    queryKey: ['clients'],
-    queryFn: () => base44.entities.Client.list(),
   });
 
   const saveMutation = useMutation({
@@ -65,17 +61,18 @@ export default function StaffPayeerAccounts() {
 
   const openCreateDialog = () => {
     setEditingAccount(null);
-    setFormData({ client_id: '', currency: 'USD', id_payeer: '', account_number: '' });
+    setFormData({ currency: 'USD', id_payeer: '', account_number: '', account_name: '', active: true });
     setDialogOpen(true);
   };
 
   const openEditDialog = (account) => {
     setEditingAccount(account);
     setFormData({
-      client_id: account.client_id,
       currency: account.currency,
       id_payeer: account.id_payeer || '',
-      account_number: account.account_number
+      account_number: account.account_number,
+      account_name: account.account_name || '',
+      active: account.active !== false
     });
     setDialogOpen(true);
   };
@@ -86,16 +83,11 @@ export default function StaffPayeerAccounts() {
   };
 
   const handleSubmit = () => {
-    if (!formData.client_id || !formData.currency || !formData.account_number) {
+    if (!formData.currency || !formData.account_number) {
       toast.error('Please fill all required fields');
       return;
     }
     saveMutation.mutate(formData);
-  };
-
-  const getClientName = (clientId) => {
-    const client = clients.find(c => c.client_id === clientId);
-    return client?.name || clientId;
   };
 
   return (
@@ -127,30 +119,36 @@ export default function StaffPayeerAccounts() {
           <Table>
             <TableHeader>
               <TableRow className="border-slate-700 hover:bg-slate-800">
-                <TableHead className="text-slate-300">Client</TableHead>
+                <TableHead className="text-slate-300">Account Name</TableHead>
                 <TableHead className="text-slate-300">Currency</TableHead>
                 <TableHead className="text-slate-300">Payeer ID</TableHead>
                 <TableHead className="text-slate-300">Account Number</TableHead>
+                <TableHead className="text-slate-300">Status</TableHead>
                 <TableHead className="text-slate-300 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-slate-400 py-8">Loading...</TableCell>
+                  <TableCell colSpan={6} className="text-center text-slate-400 py-8">Loading...</TableCell>
                 </TableRow>
               ) : accounts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-slate-400 py-8">No accounts found</TableCell>
+                  <TableCell colSpan={6} className="text-center text-slate-400 py-8">No accounts found</TableCell>
                 </TableRow>
               ) : accounts.map((account) => (
                 <TableRow key={account.id} className="border-slate-700 hover:bg-slate-750">
-                  <TableCell className="text-white">{getClientName(account.client_id)}</TableCell>
+                  <TableCell className="text-white">{account.account_name || '-'}</TableCell>
                   <TableCell>
                     <Badge className="bg-orange-500">{account.currency}</Badge>
                   </TableCell>
                   <TableCell className="text-slate-300 font-mono">{account.id_payeer || '-'}</TableCell>
                   <TableCell className="text-white font-mono">{account.account_number}</TableCell>
+                  <TableCell>
+                    <Badge className={account.active !== false ? 'bg-emerald-600' : 'bg-slate-600'}>
+                      {account.active !== false ? 'Active' : 'Inactive'}
+                    </Badge>
+                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <Button
@@ -185,38 +183,25 @@ export default function StaffPayeerAccounts() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Client *</Label>
-              <Select
-                value={formData.client_id}
-                onValueChange={(value) => setFormData({ ...formData, client_id: value })}
-              >
-                <SelectTrigger className="bg-slate-900 border-slate-600">
-                  <SelectValue placeholder="Select client" />
-                </SelectTrigger>
-                <SelectContent>
-                  {clients.map((client) => (
-                    <SelectItem key={client.client_id} value={client.client_id}>
-                      {client.name} ({client.client_id})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label>Account Name</Label>
+              <Input
+                value={formData.account_name}
+                onChange={(e) => setFormData({ ...formData, account_name: e.target.value })}
+                placeholder="e.g. Main USD Account"
+                className="bg-slate-900 border-slate-600"
+              />
             </div>
             <div className="space-y-2">
               <Label>Currency *</Label>
-              <Select
+              <select
                 value={formData.currency}
-                onValueChange={(value) => setFormData({ ...formData, currency: value })}
+                onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                className="w-full h-10 px-3 rounded bg-slate-900 border border-slate-600 text-white"
               >
-                <SelectTrigger className="bg-slate-900 border-slate-600">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {CURRENCIES.map((c) => (
-                    <SelectItem key={c} value={c}>{c}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                {CURRENCIES.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
             </div>
             <div className="space-y-2">
               <Label>Payeer ID</Label>
@@ -234,6 +219,13 @@ export default function StaffPayeerAccounts() {
                 onChange={(e) => setFormData({ ...formData, account_number: e.target.value })}
                 placeholder="Account number"
                 className="bg-slate-900 border-slate-600"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label>Active</Label>
+              <Switch
+                checked={formData.active}
+                onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
               />
             </div>
           </div>
