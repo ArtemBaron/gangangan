@@ -409,10 +409,17 @@ export default function StaffActiveOrders() {
       <StaffOrderDrawer
         order={selectedOrder}
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={() => {
+          setDrawerOpen(false);
+          queryClient.invalidateQueries({ queryKey: ['staff-active-orders'] });
+        }}
         onUpdate={(data) => {
-          updateMutation.mutate({ id: selectedOrder.id, data });
-          toast.success('Order updated');
+          updateMutation.mutate({ id: selectedOrder.id, data }, {
+            onSuccess: () => {
+              toast.success('Order updated');
+              setDrawerOpen(false);
+            }
+          });
         }}
       />
 

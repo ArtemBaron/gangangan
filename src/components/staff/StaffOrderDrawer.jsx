@@ -54,7 +54,6 @@ export default function StaffOrderDrawer({ order, open, onClose, onUpdate }) {
       }];
     }
     onUpdate(updates);
-    onClose();
   };
 
   const calculateSumToBePaid = () => {
