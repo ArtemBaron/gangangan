@@ -202,13 +202,13 @@ export default function StaffActiveOrders() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-teal-950">
-      <header className="bg-gradient-to-r from-slate-900 via-teal-900 to-slate-900 border-b border-teal-800/50 shadow-lg sticky top-0 z-10">
+    <div className="min-h-screen bg-slate-50">
+      <header className="bg-[#1e3a5f] border-b border-[#1e3a5f]/20 shadow-lg sticky top-0 z-10">
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link to={createPageUrl('StaffDashboard')}>
-                <Button variant="ghost" size="icon" className="text-teal-300 hover:text-white hover:bg-teal-800/50">
+                <Button variant="ghost" size="icon" className="text-white/80 hover:text-white hover:bg-white/10">
                   <ArrowLeft className="w-5 h-5" />
                 </Button>
               </Link>
@@ -216,17 +216,17 @@ export default function StaffActiveOrders() {
                 <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a9a123941f81322f5/b1a1be267_gan.png" alt="Logo" className="w-full h-full object-contain" />
               </div>
               <h1 className="text-xl font-bold text-white">Active Orders</h1>
-              <Badge className="bg-orange-500 shadow">{activeOrders.length}</Badge>
+              <Badge className="bg-[#f5a623] text-white shadow">{activeOrders.length}</Badge>
             </div>
             <div className="flex items-center gap-3">
               {selectedIds.size > 0 && (
                 <>
                   <span className="text-slate-400 text-sm">{selectedIds.size} selected</span>
-                  <Button onClick={handleCreateInstruction} className="bg-teal-600 hover:bg-teal-700">
+                  <Button onClick={handleCreateInstruction} className="bg-[#1e3a5f] hover:bg-[#152a45]">
                     <FileDown className="w-4 h-4 mr-2" />
                     Create TXT Instruction
                   </Button>
-                  <Button onClick={handleMarkAsExecuted} className="bg-emerald-600 hover:bg-emerald-700">
+                  <Button onClick={handleMarkAsExecuted} className="bg-[#f5a623] hover:bg-[#e09000] text-white">
                     <CheckCircle className="w-4 h-4 mr-2" />
                     Mark Executed
                   </Button>
@@ -249,11 +249,11 @@ export default function StaffActiveOrders() {
               placeholder="Search by order, client, beneficiary, BIC..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
+              className="pl-9 bg-white border-slate-300 text-slate-800 placeholder:text-slate-400"
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-48 bg-slate-800 border-slate-700 text-white">
+            <SelectTrigger className="w-48 bg-white border-slate-300 text-slate-800">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
@@ -264,7 +264,7 @@ export default function StaffActiveOrders() {
             </SelectContent>
           </Select>
           <Select value={currencyFilter} onValueChange={setCurrencyFilter}>
-            <SelectTrigger className="w-32 bg-slate-800 border-slate-700 text-white">
+            <SelectTrigger className="w-32 bg-white border-slate-300 text-slate-800">
               <SelectValue placeholder="Currency" />
             </SelectTrigger>
             <SelectContent>
@@ -280,48 +280,48 @@ export default function StaffActiveOrders() {
               variant="ghost" 
               size="sm" 
               onClick={() => { setStatusFilter('all'); setCurrencyFilter('all'); setSearch(''); }}
-              className="text-slate-400 hover:text-white"
+              className="text-slate-500 hover:text-slate-800"
             >
               <X className="w-4 h-4 mr-1" /> Clear
             </Button>
           )}
         </div>
 
-        <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-x-auto">
+        <div className="bg-white border border-slate-200 rounded-lg overflow-x-auto shadow-sm">
           <Table>
             <TableHeader>
-              <TableRow className="border-slate-700 hover:bg-slate-800">
+              <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
                 <TableHead className="w-10">
                   <Checkbox
                     checked={selectedIds.size === filteredOrders.length && filteredOrders.length > 0}
                     onCheckedChange={handleSelectAll}
                   />
                 </TableHead>
-                <TableHead className="text-slate-300">Order ID</TableHead>
-                <TableHead className="text-slate-300">Client</TableHead>
-                <TableHead className="text-slate-300">Amount</TableHead>
-                <TableHead className="text-slate-300">Beneficiary</TableHead>
-                <TableHead className="text-slate-300">Account</TableHead>
-                <TableHead className="text-slate-300">Bank/BIC</TableHead>
-                <TableHead className="text-slate-300">Remark</TableHead>
-                <TableHead className="text-slate-300">Inv</TableHead>
-                <TableHead className="text-slate-300">Proof</TableHead>
-                <TableHead className="text-slate-300">Remun%</TableHead>
-                <TableHead className="text-slate-300">To Pay</TableHead>
-                <TableHead className="text-slate-300">Status</TableHead>
-                <TableHead className="text-slate-300">Last Export</TableHead>
-                <TableHead className="text-slate-300 text-right">Actions</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Order ID</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Client</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Amount</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Beneficiary</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Account</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Bank/BIC</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Remark</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Inv</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Proof</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Remun%</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">To Pay</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Status</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Last Export</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={15} className="text-center text-slate-400 py-8">Loading...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={15} className="text-center text-slate-500 py-8">Loading...</TableCell></TableRow>
               ) : filteredOrders.length === 0 ? (
-                <TableRow><TableCell colSpan={15} className="text-center text-slate-400 py-8">No active orders</TableCell></TableRow>
+                <TableRow><TableCell colSpan={15} className="text-center text-slate-500 py-8">No active orders</TableCell></TableRow>
               ) : filteredOrders.map((order) => (
                 <TableRow 
                   key={order.id} 
-                  className={`border-slate-700 hover:bg-slate-750 ${order.non_mandiri_execution ? 'opacity-60' : ''}`}
+                  className={`border-slate-200 hover:bg-slate-50 ${order.non_mandiri_execution ? 'opacity-60' : ''}`}
                 >
                   <TableCell>
                     <Checkbox
@@ -329,37 +329,37 @@ export default function StaffActiveOrders() {
                       onCheckedChange={(checked) => handleSelectOne(order.id, checked)}
                     />
                   </TableCell>
-                  <TableCell className="text-white font-mono text-sm">
+                  <TableCell className="text-[#1e3a5f] font-mono text-sm">
                     <div className="flex items-center gap-2">
                       {order.order_number}
-                      {order.invoice_flag && <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />}
-                      {order.non_mandiri_execution && <Badge className="bg-slate-600 text-xs">Non-M</Badge>}
+                      {order.invoice_flag && <AlertTriangle className="w-3.5 h-3.5 text-[#f5a623]" />}
+                      {order.non_mandiri_execution && <Badge className="bg-slate-400 text-xs">Non-M</Badge>}
                     </div>
                   </TableCell>
-                  <TableCell className="text-slate-300">
+                  <TableCell className="text-slate-700">
                     <div className="text-sm">{order.client_name || '-'}</div>
                     <div className="text-xs text-slate-500 font-mono">{order.client_id}</div>
                   </TableCell>
-                  <TableCell className="text-white font-medium">
+                  <TableCell className="text-[#1e3a5f] font-medium">
                     {order.amount?.toLocaleString()} {order.currency}
                   </TableCell>
-                  <TableCell className="text-slate-300 max-w-[120px]">
+                  <TableCell className="text-slate-700 max-w-[120px]">
                     <div className="truncate text-sm">{order.beneficiary_name}</div>
                     <div className="text-xs text-slate-500 truncate">{order.beneficiary_address?.slice(0, 30)}</div>
                   </TableCell>
-                  <TableCell className="text-slate-400 font-mono text-xs max-w-[100px] truncate">
+                  <TableCell className="text-slate-600 font-mono text-xs max-w-[100px] truncate">
                     {order.destination_account}
                   </TableCell>
-                  <TableCell className="text-slate-400 text-sm">
+                  <TableCell className="text-slate-600 text-sm">
                     <div className="truncate max-w-[100px]">{order.bank_name}</div>
                     <div className="font-mono text-xs">{order.bic}</div>
                   </TableCell>
-                  <TableCell className="text-slate-400 text-xs max-w-[120px] truncate">
+                  <TableCell className="text-slate-600 text-xs max-w-[120px] truncate">
                     {order.transaction_remark?.slice(0, 40)}
                   </TableCell>
                   <TableCell>
                     <Badge 
-                      className={`cursor-pointer hover:opacity-80 ${order.invoice_received ? 'bg-emerald-600' : 'bg-slate-600'}`}
+                      className={`cursor-pointer hover:opacity-80 ${order.invoice_received ? 'bg-emerald-600' : 'bg-slate-400'}`}
                       onClick={() => handleToggleInvoice(order)}
                     >
                       {order.invoice_received ? 'Y' : 'N'}
@@ -367,16 +367,16 @@ export default function StaffActiveOrders() {
                   </TableCell>
                   <TableCell>
                     <Badge 
-                      className={`cursor-pointer hover:opacity-80 ${order.payment_proof ? 'bg-emerald-600' : 'bg-slate-600'}`}
+                      className={`cursor-pointer hover:opacity-80 ${order.payment_proof ? 'bg-emerald-600' : 'bg-slate-400'}`}
                       onClick={() => handleTogglePaymentProof(order)}
                     >
                       {order.payment_proof ? 'Y' : 'N'}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-slate-300 text-sm">
+                  <TableCell className="text-slate-700 text-sm">
                     {order.remuneration_percent ? `${order.remuneration_percent}%` : '-'}
                   </TableCell>
-                  <TableCell className="text-white text-sm font-medium">
+                  <TableCell className="text-[#1e3a5f] text-sm font-medium">
                     {order.sum_to_be_paid ? `${order.sum_to_be_paid.toLocaleString()} ${order.currency_to_be_paid || order.currency}` : '-'}
                   </TableCell>
                   <TableCell>
@@ -386,13 +386,13 @@ export default function StaffActiveOrders() {
                           <OrderStatusBadge status={order.status} />
                         </div>
                       </PopoverTrigger>
-                      <PopoverContent className="w-48 p-1 bg-slate-800 border-slate-700">
+                      <PopoverContent className="w-48 p-1 bg-white border-slate-200 shadow-lg">
                         <div className="space-y-1">
                           {ALL_STATUSES.map(s => (
                             <button
                               key={s}
                               onClick={() => handleStatusChange(order, s)}
-                              className={`w-full text-left px-3 py-1.5 text-sm rounded hover:bg-slate-700 text-white ${order.status === s ? 'bg-slate-700' : ''}`}
+                              className={`w-full text-left px-3 py-1.5 text-sm rounded hover:bg-slate-100 text-slate-700 ${order.status === s ? 'bg-slate-100 font-medium' : ''}`}
                             >
                               {s.replace('_', ' ').toUpperCase()}
                             </button>
@@ -401,14 +401,14 @@ export default function StaffActiveOrders() {
                       </PopoverContent>
                     </Popover>
                   </TableCell>
-                  <TableCell className="text-slate-400 text-xs">
+                  <TableCell className="text-slate-500 text-xs">
                     {order.last_download ? moment(order.last_download).format('DD/MM/YY HH:mm') : '-'}
                   </TableCell>
                   <TableCell className="text-right">
                     <Button 
                       onClick={() => openDrawer(order)} 
                       size="sm"
-                      className="bg-teal-600 hover:bg-teal-700 text-white"
+                      className="bg-[#1e3a5f] hover:bg-[#152a45] text-white"
                     >
                       <Pencil className="w-3.5 h-3.5 mr-1" />
                       Edit
