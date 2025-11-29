@@ -409,17 +409,12 @@ export default function StaffActiveOrders() {
       <StaffOrderDrawer
         order={selectedOrder}
         open={drawerOpen}
-        onClose={() => {
+        onClose={() => setDrawerOpen(false)}
+        onSave={async (data) => {
+          await base44.entities.RemittanceOrder.update(selectedOrder.id, data);
+          toast.success('Order updated');
           setDrawerOpen(false);
           queryClient.invalidateQueries({ queryKey: ['staff-active-orders'] });
-        }}
-        onUpdate={(data) => {
-          updateMutation.mutate({ id: selectedOrder.id, data }, {
-            onSuccess: () => {
-              toast.success('Order updated');
-              setDrawerOpen(false);
-            }
-          });
         }}
       />
 
