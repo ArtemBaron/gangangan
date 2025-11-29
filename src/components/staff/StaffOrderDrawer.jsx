@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import OrderStatusBadge from '@/components/orders/OrderStatusBadge';
 import moment from 'moment';
@@ -147,36 +147,28 @@ export default function StaffOrderDrawer({ order, open, onClose, onUpdate }) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Status</Label>
-                  <Select
-                    value={formData.status}
-                    onValueChange={(value) => setFormData({ ...formData, status: value })}
+                  <select
+                    value={formData.status || ''}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    className="w-full h-10 px-3 rounded-md bg-slate-800 border border-slate-600 text-white"
                   >
-                    <SelectTrigger className="bg-slate-800 border-slate-600">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {STATUSES.map(s => (
-                        <SelectItem key={s} value={s}>{s.replace('_', ' ').toUpperCase()}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    {STATUSES.map(s => (
+                      <option key={s} value={s}>{s.replace('_', ' ').toUpperCase()}</option>
+                    ))}
+                  </select>
                 </div>
                 <div className="space-y-2">
                   <Label>Currency to be Paid</Label>
-                  <Select
-                    value={formData.currency_to_be_paid}
-                    onValueChange={(value) => setFormData({ ...formData, currency_to_be_paid: value })}
+                  <select
+                    value={formData.currency_to_be_paid || 'USD'}
+                    onChange={(e) => setFormData({ ...formData, currency_to_be_paid: e.target.value })}
+                    className="w-full h-10 px-3 rounded-md bg-slate-800 border border-slate-600 text-white"
                   >
-                    <SelectTrigger className="bg-slate-800 border-slate-600">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="USD">USD</SelectItem>
-                      <SelectItem value="EUR">EUR</SelectItem>
-                      <SelectItem value="CNY">CNY</SelectItem>
-                      <SelectItem value="IDR">IDR</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="CNY">CNY</option>
+                    <option value="IDR">IDR</option>
+                  </select>
                 </div>
               </div>
 
