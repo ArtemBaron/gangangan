@@ -10,6 +10,7 @@ import OrderFilters from '@/components/orders/OrderFilters';
 import OrdersTable from '@/components/orders/OrdersTable';
 import OrderDetailsDrawer from '@/components/orders/OrderDetailsDrawer';
 import { exportOrdersToCSV } from '@/components/remittance/utils/csvGenerator';
+import { addStatusEntry } from '@/components/utils/statusHistoryHelper';
 import {
   Pagination,
   PaginationContent,
@@ -125,7 +126,7 @@ export default function OrderHistory() {
   const cancelMutation = useMutation({
     mutationFn: (order) => base44.entities.RemittanceOrder.update(order.id, {
       status: 'cancelled',
-      status_history: [...(order.status_history || []), { status: 'cancelled', timestamp: new Date().toISOString() }]
+      status_history: addStatusEntry(order.status_history, 'cancelled')
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['remittance-orders'] });

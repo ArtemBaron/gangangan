@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import OrderStatusBadge from '@/components/orders/OrderStatusBadge';
+import { parseStatusHistory, addStatusEntry } from '@/components/utils/statusHistoryHelper';
 import moment from 'moment';
 
 const STATUSES = ['created', 'draft', 'check', 'rejected', 'pending_payment', 'on_execution', 'released', 'cancelled'];
@@ -55,12 +56,9 @@ export default function StaffOrderDrawer({ order, open, onClose, onSave }) {
         non_mandiri_execution: nonMandiri
       };
 
+      // Only update status_history if status changed
       if (status !== order.status) {
-        const existingHistory = order.status_history ? JSON.parse(order.status_history) : [];
-        updates.status_history = JSON.stringify([...existingHistory, { 
-          status, 
-          timestamp: new Date().toISOString() 
-        }]);
+        updates.status_history = addStatusEntry(order.status_history, status);
       }
 
       await onSave(updates);
@@ -68,6 +66,8 @@ export default function StaffOrderDrawer({ order, open, onClose, onSave }) {
       setSaving(false);
     }
   };
+
+  const historyEntries = parseStatusHistory(order.status_history);
 
   return (
     <Sheet open={open} onOpenChange={(val) => !val && onClose()}>
@@ -192,21 +192,16 @@ export default function StaffOrderDrawer({ order, open, onClose, onSave }) {
           </div>
 
           {/* History */}
-          {order.status_history && (
+          {historyEntries.length > 0 && (
             <div>
               <Label className="text-xs text-slate-400">History</Label>
               <div className="space-y-1 mt-1 max-h-20 overflow-y-auto">
-                {(() => {
-                  try {
-                    const history = JSON.parse(order.status_history);
-                    return history.slice().reverse().map((h, i) => (
-                      <div key={i} className="flex justify-between text-xs bg-slate-800 rounded p-2">
-                        <span>{h.status?.replace('_', ' ')}</span>
-                        <span className="text-slate-500">{moment(h.timestamp).format('DD/MM HH:mm')}</span>
-                      </div>
-                    ));
-                  } catch { return null; }
-                })()}
+                {historyEntries.slice().reverse().map((h, i) => (
+                  <div key={i} className="flex justify-between text-xs bg-slate-800 rounded p-2">
+                    <span>{h.status?.replace('_', ' ')}</span>
+                    <span className="text-slate-500">{moment(h.timestamp).format('DD/MM HH:mm')}</span>
+                  </div>
+                ))}
               </div>
             </div>
           )}

@@ -3,13 +3,13 @@ import {
   Sheet, SheetContent, SheetHeader, SheetTitle
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { parseStatusHistory } from '@/components/utils/statusHistoryHelper';
 import moment from 'moment';
 
 export default function StaffExecutedDrawer({ order, open, onClose, onUpdate }) {
@@ -33,6 +33,8 @@ export default function StaffExecutedDrawer({ order, open, onClose, onUpdate }) 
     onUpdate(formData);
     onClose();
   };
+
+  const historyEntries = parseStatusHistory(order.status_history);
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
@@ -133,12 +135,14 @@ export default function StaffExecutedDrawer({ order, open, onClose, onUpdate }) 
           <div>
             <Label className="mb-3 block">Status History</Label>
             <div className="space-y-2 max-h-40 overflow-y-auto">
-              {(order.status_history || []).map((entry, i) => (
+              {historyEntries.length > 0 ? historyEntries.map((entry, i) => (
                 <div key={i} className="flex justify-between text-sm bg-slate-800 rounded p-2">
                   <span className="capitalize">{entry.status?.replace('_', ' ')}</span>
                   <span className="text-slate-400">{moment(entry.timestamp).format('DD/MM/YY HH:mm')}</span>
                 </div>
-              ))}
+              )) : (
+                <div className="text-sm text-slate-500">No history</div>
+              )}
             </div>
           </div>
 
