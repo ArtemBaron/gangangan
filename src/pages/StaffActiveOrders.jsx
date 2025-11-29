@@ -99,7 +99,8 @@ export default function StaffActiveOrders() {
   };
 
   const handleStatusChange = (order, newStatus) => {
-    const history = [...(order.status_history || []), { status: newStatus, timestamp: new Date().toISOString() }];
+    const existingHistory = order.status_history ? JSON.parse(order.status_history) : [];
+    const history = JSON.stringify([...existingHistory, { status: newStatus, timestamp: new Date().toISOString() }]);
     updateMutation.mutate({
       id: order.id,
       data: { status: newStatus, status_history: history }
@@ -126,14 +127,15 @@ export default function StaffActiveOrders() {
     URL.revokeObjectURL(url);
 
     selectedOrders.forEach(order => {
+      const existingHistory = order.status_history ? JSON.parse(order.status_history) : [];
       updateMutation.mutate({
         id: order.id,
         data: { 
           last_download: new Date().toISOString(),
-          status_history: [...(order.status_history || []), { 
+          status_history: JSON.stringify([...existingHistory, { 
             status: 'instruction_exported', 
             timestamp: new Date().toISOString() 
-          }]
+          }])
         }
       });
     });
@@ -150,12 +152,13 @@ export default function StaffActiveOrders() {
     }
 
     selectedOrders.forEach(order => {
+      const existingHistory = order.status_history ? JSON.parse(order.status_history) : [];
       updateMutation.mutate({
         id: order.id,
         data: { 
           status: 'released',
           executed: true,
-          status_history: [...(order.status_history || []), { status: 'released', timestamp: new Date().toISOString() }]
+          status_history: JSON.stringify([...existingHistory, { status: 'released', timestamp: new Date().toISOString() }])
         }
       });
     });
@@ -341,6 +344,7 @@ export default function StaffActiveOrders() {
                       className={`cursor-pointer hover:opacity-80 ${order.payment_proof ? 'bg-emerald-600' : 'bg-slate-600'}`}
                       onClick={() => {
                         const newProof = !order.payment_proof;
+                        const existingHistory = order.status_history ? JSON.parse(order.status_history) : [];
                         updateMutation.mutate({ 
                           id: order.id, 
                           data: { 
@@ -348,7 +352,7 @@ export default function StaffActiveOrders() {
                             date_payment_proof: newProof ? new Date().toISOString().split('T')[0] : '',
                             status: newProof && order.status === 'pending_payment' ? 'on_execution' : order.status,
                             status_history: newProof && order.status === 'pending_payment' 
-                              ? [...(order.status_history || []), { status: 'on_execution', timestamp: new Date().toISOString() }]
+                              ? JSON.stringify([...existingHistory, { status: 'on_execution', timestamp: new Date().toISOString() }])
                               : order.status_history
                           } 
                         });
