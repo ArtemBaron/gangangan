@@ -56,10 +56,11 @@ export default function StaffOrderDrawer({ order, open, onClose, onSave }) {
       };
 
       if (status !== order.status) {
-        updates.status_history = [...(order.status_history || []), { 
+        const existingHistory = order.status_history ? JSON.parse(order.status_history) : [];
+        updates.status_history = JSON.stringify([...existingHistory, { 
           status, 
           timestamp: new Date().toISOString() 
-        }];
+        }]);
       }
 
       await onSave(updates);
@@ -191,16 +192,21 @@ export default function StaffOrderDrawer({ order, open, onClose, onSave }) {
           </div>
 
           {/* History */}
-          {order.status_history?.length > 0 && (
+          {order.status_history && (
             <div>
               <Label className="text-xs text-slate-400">History</Label>
               <div className="space-y-1 mt-1 max-h-20 overflow-y-auto">
-                {order.status_history.slice().reverse().map((h, i) => (
-                  <div key={i} className="flex justify-between text-xs bg-slate-800 rounded p-2">
-                    <span>{h.status?.replace('_', ' ')}</span>
-                    <span className="text-slate-500">{moment(h.timestamp).format('DD/MM HH:mm')}</span>
-                  </div>
-                ))}
+                {(() => {
+                  try {
+                    const history = JSON.parse(order.status_history);
+                    return history.slice().reverse().map((h, i) => (
+                      <div key={i} className="flex justify-between text-xs bg-slate-800 rounded p-2">
+                        <span>{h.status?.replace('_', ' ')}</span>
+                        <span className="text-slate-500">{moment(h.timestamp).format('DD/MM HH:mm')}</span>
+                      </div>
+                    ));
+                  } catch { return null; }
+                })()}
               </div>
             </div>
           )}
