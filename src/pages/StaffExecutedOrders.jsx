@@ -58,12 +58,12 @@ export default function StaffExecutedOrders() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-teal-950">
-      <header className="bg-gradient-to-r from-slate-900 via-teal-900 to-slate-900 border-b border-teal-800/50 shadow-lg sticky top-0 z-10">
+    <div className="min-h-screen bg-slate-50">
+      <header className="bg-[#1e3a5f] border-b border-[#1e3a5f]/20 shadow-lg sticky top-0 z-10">
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-4">
             <Link to={createPageUrl('StaffDashboard')}>
-              <Button variant="ghost" size="icon" className="text-teal-300 hover:text-white hover:bg-teal-800/50">
+              <Button variant="ghost" size="icon" className="text-white/80 hover:text-white hover:bg-white/10">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
@@ -71,7 +71,7 @@ export default function StaffExecutedOrders() {
               <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a9a123941f81322f5/b1a1be267_gan.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-xl font-bold text-white">Executed Orders</h1>
-            <Badge className="bg-emerald-600 shadow">{executedOrders.length}</Badge>
+            <Badge className="bg-emerald-600 text-white shadow">{executedOrders.length}</Badge>
           </div>
         </div>
       </header>
@@ -84,11 +84,11 @@ export default function StaffExecutedOrders() {
               placeholder="Search orders..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
+              className="pl-9 bg-white border-slate-300 text-slate-800 placeholder:text-slate-400"
             />
           </div>
           <Select value={settledFilter} onValueChange={setSettledFilter}>
-            <SelectTrigger className="w-48 bg-slate-800 border-slate-700 text-white">
+            <SelectTrigger className="w-48 bg-white border-slate-300 text-slate-800">
               <SelectValue placeholder="Filter by settled" />
             </SelectTrigger>
             <SelectContent>
@@ -100,64 +100,64 @@ export default function StaffExecutedOrders() {
           </Select>
         </div>
 
-        <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-x-auto">
+        <div className="bg-white border border-slate-200 rounded-lg overflow-x-auto shadow-sm">
           <Table>
             <TableHeader>
-              <TableRow className="border-slate-700 hover:bg-slate-800">
-                <TableHead className="text-slate-300">Order ID</TableHead>
-                <TableHead className="text-slate-300">Client</TableHead>
-                <TableHead className="text-slate-300">Amount</TableHead>
-                <TableHead className="text-slate-300">Beneficiary</TableHead>
-                <TableHead className="text-slate-300">Bank/BIC</TableHead>
-                <TableHead className="text-slate-300">MT103</TableHead>
-                <TableHead className="text-slate-300">Settled</TableHead>
-                <TableHead className="text-slate-300">Refund</TableHead>
-                <TableHead className="text-slate-300 text-right">Actions</TableHead>
+              <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
+                <TableHead className="text-[#1e3a5f] font-semibold">Order ID</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Client</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Amount</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Beneficiary</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Bank/BIC</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">MT103</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Settled</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Refund</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={9} className="text-center text-slate-400 py-8">Loading...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={9} className="text-center text-slate-500 py-8">Loading...</TableCell></TableRow>
               ) : filteredOrders.length === 0 ? (
-                <TableRow><TableCell colSpan={9} className="text-center text-slate-400 py-8">No executed orders</TableCell></TableRow>
+                <TableRow><TableCell colSpan={9} className="text-center text-slate-500 py-8">No executed orders</TableCell></TableRow>
               ) : filteredOrders.map((order) => (
-                <TableRow key={order.id} className="border-slate-700 hover:bg-slate-750">
-                  <TableCell className="text-white font-mono text-sm">{order.order_number}</TableCell>
-                  <TableCell className="text-slate-300">{order.client_name || '-'}</TableCell>
-                  <TableCell className="text-white font-medium">
+                <TableRow key={order.id} className="border-slate-200 hover:bg-slate-50">
+                  <TableCell className="text-[#1e3a5f] font-mono text-sm">{order.order_number}</TableCell>
+                  <TableCell className="text-slate-700">{order.client_name || '-'}</TableCell>
+                  <TableCell className="text-[#1e3a5f] font-medium">
                     {order.amount?.toLocaleString()} {order.currency}
                   </TableCell>
-                  <TableCell className="text-slate-300 max-w-[150px] truncate">{order.beneficiary_name}</TableCell>
-                  <TableCell className="text-slate-400 text-sm">
+                  <TableCell className="text-slate-700 max-w-[150px] truncate">{order.beneficiary_name}</TableCell>
+                  <TableCell className="text-slate-600 text-sm">
                     <div>{order.bank_name?.slice(0, 20)}</div>
                     <div className="font-mono text-xs">{order.bic}</div>
                   </TableCell>
                   <TableCell>
-                    <Badge className={order.mt103_status === 'sent' ? 'bg-green-600' : 'bg-slate-600'}>
+                    <Badge className={order.mt103_status === 'sent' ? 'bg-emerald-600' : 'bg-slate-400'}>
                       {order.mt103_status === 'sent' ? 'Sent' : 'Not Sent'}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <Badge className={
-                      order.settled === 'Y' ? 'bg-green-600' : 
-                      order.settled === 'N' ? 'bg-red-600' : 'bg-slate-600'
+                      order.settled === 'Y' ? 'bg-emerald-600' : 
+                      order.settled === 'N' ? 'bg-red-500' : 'bg-slate-400'
                     }>
                       {order.settled || 'NA'}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge className={order.refund ? 'bg-orange-600' : 'bg-slate-600'}>
+                    <Badge className={order.refund ? 'bg-[#f5a623]' : 'bg-slate-400'}>
                       {order.refund ? 'Y' : 'N'}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <Button
-                      variant="ghost"
-                      size="icon"
+                      size="sm"
                       onClick={() => openDrawer(order)}
-                      className="text-slate-400 hover:text-white"
+                      className="bg-[#1e3a5f] hover:bg-[#152a45] text-white"
                     >
-                      <Eye className="w-4 h-4" />
+                      <Eye className="w-3.5 h-3.5 mr-1" />
+                      View
                     </Button>
                   </TableCell>
                 </TableRow>

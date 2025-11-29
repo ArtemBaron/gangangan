@@ -137,13 +137,13 @@ export default function StaffClients() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-teal-950">
-      <header className="bg-gradient-to-r from-slate-900 via-teal-900 to-slate-900 border-b border-teal-800/50 shadow-lg">
+    <div className="min-h-screen bg-slate-50">
+      <header className="bg-[#1e3a5f] border-b border-[#1e3a5f]/20 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link to={createPageUrl('StaffDashboard')}>
-                <Button variant="ghost" size="icon" className="text-teal-300 hover:text-white hover:bg-teal-800/50">
+                <Button variant="ghost" size="icon" className="text-white/80 hover:text-white hover:bg-white/10">
                   <ArrowLeft className="w-5 h-5" />
                 </Button>
               </Link>
@@ -151,9 +151,9 @@ export default function StaffClients() {
                 <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a9a123941f81322f5/b1a1be267_gan.png" alt="Logo" className="w-full h-full object-contain" />
               </div>
               <h1 className="text-xl font-bold text-white">Client Management</h1>
-              <Badge className="bg-teal-600">{clients.length}</Badge>
+              <Badge className="bg-[#f5a623] text-white">{clients.length}</Badge>
             </div>
-            <Button onClick={openCreateDialog} className="bg-teal-600 hover:bg-teal-700">
+            <Button onClick={openCreateDialog} className="bg-[#f5a623] hover:bg-[#e09000] text-white">
               <Plus className="w-4 h-4 mr-2" />
               Add Client
             </Button>
@@ -169,44 +169,44 @@ export default function StaffClients() {
               placeholder="Search clients..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
+              className="pl-9 bg-white border-slate-300 text-slate-800 placeholder:text-slate-400"
             />
           </div>
         </div>
 
-        <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
           <Table>
             <TableHeader>
-              <TableRow className="border-slate-700 hover:bg-slate-800">
-                <TableHead className="text-slate-300">Client ID</TableHead>
-                <TableHead className="text-slate-300">Name</TableHead>
-                <TableHead className="text-slate-300">Email</TableHead>
-                <TableHead className="text-slate-300">Login</TableHead>
-                <TableHead className="text-slate-300">Last Login</TableHead>
-                <TableHead className="text-slate-300">Status</TableHead>
-                <TableHead className="text-slate-300 text-right">Actions</TableHead>
+              <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
+                <TableHead className="text-[#1e3a5f] font-semibold">Client ID</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Name</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Email</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Login</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Last Login</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Status</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center text-slate-400 py-8">Loading...</TableCell>
+                  <TableCell colSpan={7} className="text-center text-slate-500 py-8">Loading...</TableCell>
                 </TableRow>
               ) : filteredClients.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center text-slate-400 py-8">No clients found</TableCell>
+                  <TableCell colSpan={7} className="text-center text-slate-500 py-8">No clients found</TableCell>
                 </TableRow>
               ) : filteredClients.map((client) => (
-                <TableRow key={client.id} className="border-slate-700 hover:bg-slate-750">
-                  <TableCell className="text-white font-mono">{client.client_id}</TableCell>
-                  <TableCell className="text-white font-medium">{client.name}</TableCell>
-                  <TableCell className="text-slate-300">{client.email}</TableCell>
-                  <TableCell className="text-slate-300 font-mono">{client.login || '-'}</TableCell>
-                  <TableCell className="text-slate-400 text-sm">
+                <TableRow key={client.id} className="border-slate-200 hover:bg-slate-50">
+                  <TableCell className="text-[#1e3a5f] font-mono">{client.client_id}</TableCell>
+                  <TableCell className="text-[#1e3a5f] font-medium">{client.name}</TableCell>
+                  <TableCell className="text-slate-700">{client.email}</TableCell>
+                  <TableCell className="text-slate-700 font-mono">{client.login || '-'}</TableCell>
+                  <TableCell className="text-slate-500 text-sm">
                     {client.last_login ? moment(client.last_login).format('DD/MM/YY HH:mm') : 'Never'}
                   </TableCell>
                   <TableCell>
-                    <Badge className={client.active ? 'bg-emerald-600 text-white' : 'bg-slate-600 text-white'}>
+                    <Badge className={client.active ? 'bg-emerald-600 text-white' : 'bg-slate-400 text-white'}>
                       {client.active ? 'Active' : 'Inactive'}
                     </Badge>
                   </TableCell>
@@ -216,7 +216,7 @@ export default function StaffClients() {
                         variant="ghost"
                         size="icon"
                         onClick={() => openEditDialog(client)}
-                        className="text-slate-400 hover:text-white"
+                        className="text-[#1e3a5f] hover:text-[#152a45] hover:bg-slate-100"
                         title="Edit"
                       >
                         <Pencil className="w-4 h-4" />
@@ -225,7 +225,7 @@ export default function StaffClients() {
                         variant="ghost"
                         size="icon"
                         onClick={() => toggleActiveMutation.mutate(client)}
-                        className={client.active ? 'text-orange-400 hover:text-orange-300' : 'text-emerald-400 hover:text-emerald-300'}
+                        className={client.active ? 'text-[#f5a623] hover:text-[#e09000] hover:bg-slate-100' : 'text-emerald-600 hover:text-emerald-700 hover:bg-slate-100'}
                         title={client.active ? 'Deactivate' : 'Activate'}
                       >
                         {client.active ? <UserX className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
@@ -234,7 +234,7 @@ export default function StaffClients() {
                         variant="ghost"
                         size="icon"
                         onClick={() => openDeleteDialog(client)}
-                        className="text-red-400 hover:text-red-300"
+                        className="text-red-500 hover:text-red-600 hover:bg-slate-100"
                         title="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -250,76 +250,76 @@ export default function StaffClients() {
 
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-lg">
+        <DialogContent className="bg-white border-slate-200 text-slate-800 max-w-lg">
           <DialogHeader>
-            <DialogTitle>{editingClient ? 'Edit Client' : 'Add New Client'}</DialogTitle>
+            <DialogTitle className="text-[#1e3a5f]">{editingClient ? 'Edit Client' : 'Add New Client'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Client ID *</Label>
+                <Label className="text-slate-700">Client ID *</Label>
                 <Input
                   value={formData.client_id}
                   onChange={(e) => setFormData({ ...formData, client_id: e.target.value })}
                   placeholder="e.g., CLT-001"
-                  className="bg-slate-900 border-slate-600"
+                  className="bg-white border-slate-300"
                   disabled={!!editingClient}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Name *</Label>
+                <Label className="text-slate-700">Name *</Label>
                 <Input
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Client name"
-                  className="bg-slate-900 border-slate-600"
+                  className="bg-white border-slate-300"
                 />
               </div>
             </div>
             
             <div className="space-y-2">
-              <Label>Email *</Label>
+              <Label className="text-slate-700">Email *</Label>
               <Input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="client@example.com"
-                className="bg-slate-900 border-slate-600"
+                className="bg-white border-slate-300"
               />
             </div>
 
-            <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-4 space-y-4">
-              <div className="flex items-center gap-2 text-teal-400 text-sm font-medium">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-4">
+              <div className="flex items-center gap-2 text-[#1e3a5f] text-sm font-medium">
                 <Key className="w-4 h-4" />
                 Authorization Credentials
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Login *</Label>
+                  <Label className="text-slate-700">Login *</Label>
                   <Input
                     value={formData.login}
                     onChange={(e) => setFormData({ ...formData, login: e.target.value })}
                     placeholder="username"
-                    className="bg-slate-900 border-slate-600"
+                    className="bg-white border-slate-300"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Password *</Label>
+                  <Label className="text-slate-700">Password *</Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                       placeholder="••••••••"
-                      className="bg-slate-900 border-slate-600 pr-20"
+                      className="bg-white border-slate-300 pr-20"
                     />
                     <div className="absolute right-1 top-1 flex gap-1">
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 text-slate-400 hover:text-white"
+                        className="h-7 w-7 text-slate-500 hover:text-slate-800"
                         onClick={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -333,7 +333,7 @@ export default function StaffClients() {
                 variant="outline"
                 size="sm"
                 onClick={generatePassword}
-                className="border-teal-600 text-teal-400 hover:bg-teal-900/30"
+                className="border-[#1e3a5f] text-[#1e3a5f] hover:bg-slate-100"
               >
                 <Key className="w-3.5 h-3.5 mr-2" />
                 Generate Password
@@ -341,12 +341,12 @@ export default function StaffClients() {
             </div>
 
             <div className="space-y-2">
-              <Label>Description</Label>
+              <Label className="text-slate-700">Description</Label>
               <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Optional description"
-                className="bg-slate-900 border-slate-600"
+                className="bg-white border-slate-300"
               />
             </div>
             <div className="flex items-center gap-3">
@@ -354,14 +354,14 @@ export default function StaffClients() {
                 checked={formData.active}
                 onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
               />
-              <Label>Active</Label>
+              <Label className="text-slate-700">Active</Label>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={closeDialog} className="border-slate-600 text-slate-300">
+            <Button variant="outline" onClick={closeDialog} className="border-slate-300 text-slate-600">
               Cancel
             </Button>
-            <Button onClick={handleSubmit} disabled={saveMutation.isPending} className="bg-teal-600 hover:bg-teal-700">
+            <Button onClick={handleSubmit} disabled={saveMutation.isPending} className="bg-[#1e3a5f] hover:bg-[#152a45]">
               {saveMutation.isPending ? 'Saving...' : 'Save'}
             </Button>
           </DialogFooter>
@@ -370,15 +370,15 @@ export default function StaffClients() {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
+        <AlertDialogContent className="bg-white border-slate-200 text-slate-800">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Client</AlertDialogTitle>
-            <AlertDialogDescription className="text-slate-400">
+            <AlertDialogTitle className="text-[#1e3a5f]">Delete Client</AlertDialogTitle>
+            <AlertDialogDescription className="text-slate-500">
               Are you sure you want to delete client "{clientToDelete?.name}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-slate-600 text-slate-300 hover:bg-slate-700">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="border-slate-300 text-slate-600 hover:bg-slate-100">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deleteMutation.mutate(clientToDelete?.id)}
               className="bg-red-600 hover:bg-red-700"

@@ -91,13 +91,13 @@ export default function StaffPayeerAccounts() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-teal-950">
-      <header className="bg-gradient-to-r from-slate-900 via-teal-900 to-slate-900 border-b border-teal-800/50 shadow-lg">
+    <div className="min-h-screen bg-slate-50">
+      <header className="bg-[#1e3a5f] border-b border-[#1e3a5f]/20 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link to={createPageUrl('StaffDashboard')}>
-                <Button variant="ghost" size="icon" className="text-teal-300 hover:text-white hover:bg-teal-800/50">
+                <Button variant="ghost" size="icon" className="text-white/80 hover:text-white hover:bg-white/10">
                   <ArrowLeft className="w-5 h-5" />
                 </Button>
               </Link>
@@ -106,7 +106,7 @@ export default function StaffPayeerAccounts() {
               </div>
               <h1 className="text-xl font-bold text-white">Payeer Accounts</h1>
             </div>
-            <Button onClick={openCreateDialog} className="bg-teal-600 hover:bg-teal-700">
+            <Button onClick={openCreateDialog} className="bg-[#f5a623] hover:bg-[#e09000] text-white">
               <Plus className="w-4 h-4 mr-2" />
               Add Account
             </Button>
@@ -115,37 +115,37 @@ export default function StaffPayeerAccounts() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
           <Table>
             <TableHeader>
-              <TableRow className="border-slate-700 hover:bg-slate-800">
-                <TableHead className="text-slate-300">Account Name</TableHead>
-                <TableHead className="text-slate-300">Currency</TableHead>
-                <TableHead className="text-slate-300">Payeer ID</TableHead>
-                <TableHead className="text-slate-300">Account Number</TableHead>
-                <TableHead className="text-slate-300">Status</TableHead>
-                <TableHead className="text-slate-300 text-right">Actions</TableHead>
+              <TableRow className="border-slate-200 bg-slate-50 hover:bg-slate-50">
+                <TableHead className="text-[#1e3a5f] font-semibold">Account Name</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Currency</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Payeer ID</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Account Number</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold">Status</TableHead>
+                <TableHead className="text-[#1e3a5f] font-semibold text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-slate-400 py-8">Loading...</TableCell>
+                  <TableCell colSpan={6} className="text-center text-slate-500 py-8">Loading...</TableCell>
                 </TableRow>
               ) : accounts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-slate-400 py-8">No accounts found</TableCell>
+                  <TableCell colSpan={6} className="text-center text-slate-500 py-8">No accounts found</TableCell>
                 </TableRow>
               ) : accounts.map((account) => (
-                <TableRow key={account.id} className="border-slate-700 hover:bg-slate-750">
-                  <TableCell className="text-white">{account.account_name || '-'}</TableCell>
+                <TableRow key={account.id} className="border-slate-200 hover:bg-slate-50">
+                  <TableCell className="text-[#1e3a5f] font-medium">{account.account_name || '-'}</TableCell>
                   <TableCell>
-                    <Badge className="bg-orange-500">{account.currency}</Badge>
+                    <Badge className="bg-[#f5a623] text-white">{account.currency}</Badge>
                   </TableCell>
-                  <TableCell className="text-slate-300 font-mono">{account.id_payeer || '-'}</TableCell>
-                  <TableCell className="text-white font-mono">{account.account_number}</TableCell>
+                  <TableCell className="text-slate-600 font-mono">{account.id_payeer || '-'}</TableCell>
+                  <TableCell className="text-[#1e3a5f] font-mono">{account.account_number}</TableCell>
                   <TableCell>
-                    <Badge className={account.active !== false ? 'bg-emerald-600' : 'bg-slate-600'}>
+                    <Badge className={account.active !== false ? 'bg-emerald-600' : 'bg-slate-400'}>
                       {account.active !== false ? 'Active' : 'Inactive'}
                     </Badge>
                   </TableCell>
@@ -155,7 +155,7 @@ export default function StaffPayeerAccounts() {
                         variant="ghost"
                         size="icon"
                         onClick={() => openEditDialog(account)}
-                        className="text-slate-400 hover:text-white"
+                        className="text-[#1e3a5f] hover:text-[#152a45] hover:bg-slate-100"
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -163,7 +163,7 @@ export default function StaffPayeerAccounts() {
                         variant="ghost"
                         size="icon"
                         onClick={() => deleteMutation.mutate(account.id)}
-                        className="text-red-400 hover:text-red-300"
+                        className="text-red-500 hover:text-red-600 hover:bg-slate-100"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -177,26 +177,26 @@ export default function StaffPayeerAccounts() {
       </main>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-slate-800 border-slate-700 text-white">
+        <DialogContent className="bg-white border-slate-200 text-slate-800">
           <DialogHeader>
-            <DialogTitle>{editingAccount ? 'Edit Account' : 'Add Payeer Account'}</DialogTitle>
+            <DialogTitle className="text-[#1e3a5f]">{editingAccount ? 'Edit Account' : 'Add Payeer Account'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Account Name</Label>
+              <Label className="text-slate-700">Account Name</Label>
               <Input
                 value={formData.account_name}
                 onChange={(e) => setFormData({ ...formData, account_name: e.target.value })}
                 placeholder="e.g. Main USD Account"
-                className="bg-slate-900 border-slate-600"
+                className="bg-white border-slate-300"
               />
             </div>
             <div className="space-y-2">
-              <Label>Currency *</Label>
+              <Label className="text-slate-700">Currency *</Label>
               <select
                 value={formData.currency}
                 onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                className="w-full h-10 px-3 rounded bg-slate-900 border border-slate-600 text-white"
+                className="w-full h-10 px-3 rounded bg-white border border-slate-300 text-slate-800"
               >
                 {CURRENCIES.map((c) => (
                   <option key={c} value={c}>{c}</option>
@@ -204,25 +204,25 @@ export default function StaffPayeerAccounts() {
               </select>
             </div>
             <div className="space-y-2">
-              <Label>Payeer ID</Label>
+              <Label className="text-slate-700">Payeer ID</Label>
               <Input
                 value={formData.id_payeer}
                 onChange={(e) => setFormData({ ...formData, id_payeer: e.target.value })}
                 placeholder="Payeer ID"
-                className="bg-slate-900 border-slate-600"
+                className="bg-white border-slate-300"
               />
             </div>
             <div className="space-y-2">
-              <Label>Account Number *</Label>
+              <Label className="text-slate-700">Account Number *</Label>
               <Input
                 value={formData.account_number}
                 onChange={(e) => setFormData({ ...formData, account_number: e.target.value })}
                 placeholder="Account number"
-                className="bg-slate-900 border-slate-600"
+                className="bg-white border-slate-300"
               />
             </div>
             <div className="flex items-center justify-between">
-              <Label>Active</Label>
+              <Label className="text-slate-700">Active</Label>
               <Switch
                 checked={formData.active}
                 onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
@@ -230,10 +230,10 @@ export default function StaffPayeerAccounts() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={closeDialog} className="border-slate-600 text-slate-300">
+            <Button variant="outline" onClick={closeDialog} className="border-slate-300 text-slate-600">
               Cancel
             </Button>
-            <Button onClick={handleSubmit} disabled={saveMutation.isPending} className="bg-teal-600 hover:bg-teal-700">
+            <Button onClick={handleSubmit} disabled={saveMutation.isPending} className="bg-[#1e3a5f] hover:bg-[#152a45]">
               {saveMutation.isPending ? 'Saving...' : 'Save'}
             </Button>
           </DialogFooter>
