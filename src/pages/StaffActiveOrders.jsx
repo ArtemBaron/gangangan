@@ -17,13 +17,14 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Search, FileDown, CheckCircle, Trash2, Eye, AlertTriangle, X, Pencil } from 'lucide-react';
+import { ArrowLeft, Search, FileDown, CheckCircle, Trash2, AlertTriangle, X, Pencil } from 'lucide-react';
 import {
   Popover, PopoverContent, PopoverTrigger
 } from "@/components/ui/popover";
 import OrderStatusBadge from '@/components/orders/OrderStatusBadge';
 import StaffOrderDrawer from '@/components/staff/StaffOrderDrawer';
 import { generateTxtInstruction } from '@/components/staff/utils/instructionGenerator';
+import { parseStatusHistory, addStatusEntry } from '@/components/utils/statusHistoryHelper';
 import moment from 'moment';
 
 const ACTIVE_STATUSES = ['created', 'draft', 'check', 'pending_payment', 'on_execution'];
@@ -99,13 +100,39 @@ export default function StaffActiveOrders() {
   };
 
   const handleStatusChange = (order, newStatus) => {
-    const existingHistory = order.status_history ? JSON.parse(order.status_history) : [];
-    const history = JSON.stringify([...existingHistory, { status: newStatus, timestamp: new Date().toISOString() }]);
     updateMutation.mutate({
       id: order.id,
-      data: { status: newStatus, status_history: history }
+      data: { 
+        status: newStatus, 
+        status_history: addStatusEntry(order.status_history, newStatus)
+      }
     });
     toast.success(`Status changed to ${newStatus}`);
+  };
+
+  const handleToggleInvoice = (order) => {
+    updateMutation.mutate({ 
+      id: order.id, 
+      data: { invoice_received: !order.invoice_received } 
+    });
+    toast.success(`Invoice ${!order.invoice_received ? 'received' : 'pending'}`);
+  };
+
+  const handleTogglePaymentProof = (order) => {
+    const newProof = !order.payment_proof;
+    const data = { 
+      payment_proof: newProof,
+      date_payment_proof: newProof ? new Date().toISOString().split('T')[0] : ''
+    };
+    
+    // If payment proof is set and status is pending_payment, move to on_execution
+    if (newProof && order.status === 'pending_payment') {
+      data.status = 'on_execution';
+      data.status_history = addStatusEntry(order.status_history, 'on_execution');
+    }
+    
+    updateMutation.mutate({ id: order.id, data });
+    toast.success(`Payment proof ${newProof ? 'confirmed' : 'removed'}`);
   };
 
   const handleCreateInstruction = () => {
@@ -127,15 +154,11 @@ export default function StaffActiveOrders() {
     URL.revokeObjectURL(url);
 
     selectedOrders.forEach(order => {
-      const existingHistory = order.status_history ? JSON.parse(order.status_history) : [];
       updateMutation.mutate({
         id: order.id,
         data: { 
           last_download: new Date().toISOString(),
-          status_history: JSON.stringify([...existingHistory, { 
-            status: 'instruction_exported', 
-            timestamp: new Date().toISOString() 
-          }])
+          status_history: addStatusEntry(order.status_history, 'instruction_exported')
         }
       });
     });
@@ -152,13 +175,12 @@ export default function StaffActiveOrders() {
     }
 
     selectedOrders.forEach(order => {
-      const existingHistory = order.status_history ? JSON.parse(order.status_history) : [];
       updateMutation.mutate({
         id: order.id,
         data: { 
           status: 'released',
           executed: true,
-          status_history: JSON.stringify([...existingHistory, { status: 'released', timestamp: new Date().toISOString() }])
+          status_history: addStatusEntry(order.status_history, 'released')
         }
       });
     });
@@ -170,6 +192,13 @@ export default function StaffActiveOrders() {
   const openDrawer = (order) => {
     setSelectedOrder(order);
     setDrawerOpen(true);
+  };
+
+  const handleDrawerSave = async (data) => {
+    await base44.entities.RemittanceOrder.update(selectedOrder.id, data);
+    toast.success('Order updated');
+    setDrawerOpen(false);
+    queryClient.invalidateQueries({ queryKey: ['staff-active-orders'] });
   };
 
   return (
@@ -331,10 +360,7 @@ export default function StaffActiveOrders() {
                   <TableCell>
                     <Badge 
                       className={`cursor-pointer hover:opacity-80 ${order.invoice_received ? 'bg-emerald-600' : 'bg-slate-600'}`}
-                      onClick={() => {
-                        updateMutation.mutate({ id: order.id, data: { invoice_received: !order.invoice_received } });
-                        toast.success(`Invoice ${!order.invoice_received ? 'received' : 'pending'}`);
-                      }}
+                      onClick={() => handleToggleInvoice(order)}
                     >
                       {order.invoice_received ? 'Y' : 'N'}
                     </Badge>
@@ -342,22 +368,7 @@ export default function StaffActiveOrders() {
                   <TableCell>
                     <Badge 
                       className={`cursor-pointer hover:opacity-80 ${order.payment_proof ? 'bg-emerald-600' : 'bg-slate-600'}`}
-                      onClick={() => {
-                        const newProof = !order.payment_proof;
-                        const existingHistory = order.status_history ? JSON.parse(order.status_history) : [];
-                        updateMutation.mutate({ 
-                          id: order.id, 
-                          data: { 
-                            payment_proof: newProof,
-                            date_payment_proof: newProof ? new Date().toISOString().split('T')[0] : '',
-                            status: newProof && order.status === 'pending_payment' ? 'on_execution' : order.status,
-                            status_history: newProof && order.status === 'pending_payment' 
-                              ? JSON.stringify([...existingHistory, { status: 'on_execution', timestamp: new Date().toISOString() }])
-                              : order.status_history
-                          } 
-                        });
-                        toast.success(`Payment proof ${newProof ? 'confirmed' : 'removed'}`);
-                      }}
+                      onClick={() => handleTogglePaymentProof(order)}
                     >
                       {order.payment_proof ? 'Y' : 'N'}
                     </Badge>
@@ -414,12 +425,7 @@ export default function StaffActiveOrders() {
         order={selectedOrder}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        onSave={async (data) => {
-          await base44.entities.RemittanceOrder.update(selectedOrder.id, data);
-          toast.success('Order updated');
-          setDrawerOpen(false);
-          queryClient.invalidateQueries({ queryKey: ['staff-active-orders'] });
-        }}
+        onSave={handleDrawerSave}
       />
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
