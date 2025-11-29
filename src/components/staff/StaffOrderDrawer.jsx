@@ -8,13 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import OrderStatusBadge from '@/components/orders/OrderStatusBadge';
-import { parseStatusHistory, addStatusEntry } from '@/components/utils/statusHistoryHelper';
+import { parseStatusHistory } from '@/components/utils/statusHistoryHelper';
 import moment from 'moment';
 
-const STATUSES = ['created', 'draft', 'check', 'rejected', 'pending_payment', 'on_execution', 'released', 'cancelled'];
-
 export default function StaffOrderDrawer({ order, open, onClose, onSave }) {
-  const [status, setStatus] = useState('created');
   const [invoiceReceived, setInvoiceReceived] = useState(false);
   const [paymentProof, setPaymentProof] = useState(false);
   const [remunerationPercent, setRemunerationPercent] = useState('');
@@ -27,7 +24,6 @@ export default function StaffOrderDrawer({ order, open, onClose, onSave }) {
 
   useEffect(() => {
     if (order && open) {
-      setStatus(order.status || 'created');
       setInvoiceReceived(!!order.invoice_received);
       setPaymentProof(!!order.payment_proof);
       setRemunerationPercent(order.remuneration_percent ?? '');
@@ -45,7 +41,6 @@ export default function StaffOrderDrawer({ order, open, onClose, onSave }) {
     setSaving(true);
     try {
       const updates = {
-        status,
         invoice_received: invoiceReceived,
         payment_proof: paymentProof,
         remuneration_percent: remunerationPercent !== '' ? parseFloat(remunerationPercent) : null,
@@ -55,11 +50,6 @@ export default function StaffOrderDrawer({ order, open, onClose, onSave }) {
         staff_description: staffDescription,
         non_mandiri_execution: nonMandiri
       };
-
-      // Only update status_history if status changed
-      if (status !== order.status) {
-        updates.status_history = addStatusEntry(order.status_history, status);
-      }
 
       await onSave(updates);
     } finally {
@@ -89,20 +79,6 @@ export default function StaffOrderDrawer({ order, open, onClose, onSave }) {
           </div>
 
           <Separator className="bg-slate-700" />
-
-          {/* Status */}
-          <div>
-            <Label className="text-sm mb-2 block">Status</Label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="w-full h-10 px-3 rounded bg-slate-800 border border-slate-600 text-white"
-            >
-              {STATUSES.map(s => (
-                <option key={s} value={s}>{s.replace('_', ' ').toUpperCase()}</option>
-              ))}
-            </select>
-          </div>
 
           {/* Checkboxes */}
           <div className="grid grid-cols-2 gap-3">
