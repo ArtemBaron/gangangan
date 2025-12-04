@@ -5,6 +5,9 @@ import StaffClients from './pages/StaffClients';
 import StaffActiveOrders from './pages/StaffActiveOrders';
 import StaffExecutedOrders from './pages/StaffExecutedOrders';
 import StaffPayeerAccounts from './pages/StaffPayeerAccounts';
+import GTrans from './pages/GTrans';
+import GTransContactSales from './pages/GTransContactSales';
+import GTransDocumentation from './pages/GTransDocumentation';
 
 
 export const PAGES = {
@@ -15,6 +18,9 @@ export const PAGES = {
     "StaffActiveOrders": StaffActiveOrders,
     "StaffExecutedOrders": StaffExecutedOrders,
     "StaffPayeerAccounts": StaffPayeerAccounts,
+    "GTrans": GTrans,
+    "GTransContactSales": GTransContactSales,
+    "GTransDocumentation": GTransDocumentation,
 }
 
 export const pagesConfig = {
