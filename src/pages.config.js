@@ -8,6 +8,9 @@ import StaffPayeerAccounts from './pages/StaffPayeerAccounts';
 import GTrans from './pages/GTrans';
 import GTransContactSales from './pages/GTransContactSales';
 import GTransDocumentation from './pages/GTransDocumentation';
+import GTransWorkScheme from './pages/GTransWorkScheme';
+import GTransFAQ from './pages/GTransFAQ';
+import GTransLogin from './pages/GTransLogin';
 
 
 export const PAGES = {
@@ -21,6 +24,9 @@ export const PAGES = {
     "GTrans": GTrans,
     "GTransContactSales": GTransContactSales,
     "GTransDocumentation": GTransDocumentation,
+    "GTransWorkScheme": GTransWorkScheme,
+    "GTransFAQ": GTransFAQ,
+    "GTransLogin": GTransLogin,
 }
 
 export const pagesConfig = {
