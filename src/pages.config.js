@@ -11,6 +11,7 @@ import GTransDocumentation from './pages/GTransDocumentation';
 import GTransWorkScheme from './pages/GTransWorkScheme';
 import GTransFAQ from './pages/GTransFAQ';
 import GTransLogin from './pages/GTransLogin';
+import GTransPresentation from './pages/GTransPresentation';
 
 
 export const PAGES = {
@@ -27,6 +28,7 @@ export const PAGES = {
     "GTransWorkScheme": GTransWorkScheme,
     "GTransFAQ": GTransFAQ,
     "GTransLogin": GTransLogin,
+    "GTransPresentation": GTransPresentation,
 }
 
 export const pagesConfig = {
