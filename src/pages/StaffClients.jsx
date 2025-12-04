@@ -20,7 +20,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Plus, Pencil, Trash2, UserX, UserCheck, Search, Eye, EyeOff, Key } from 'lucide-react';
+import { ArrowLeft, Plus, Pencil, Trash2, UserX, UserCheck, Search, Eye, EyeOff, Key, Globe } from 'lucide-react';
 import moment from 'moment';
 
 export default function StaffClients() {
@@ -153,10 +153,18 @@ export default function StaffClients() {
               <h1 className="text-xl font-bold text-white">Client Management</h1>
               <Badge className="bg-[#f5a623] text-white">{clients.length}</Badge>
             </div>
-            <Button onClick={openCreateDialog} className="bg-[#f5a623] hover:bg-[#e09000] text-white">
+            <div className="flex items-center gap-3">
+              <Link to={createPageUrl('GTrans')}>
+                <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10">
+                  <Globe className="w-4 h-4 mr-1" />
+                  Public Site
+                </Button>
+              </Link>
+              <Button onClick={openCreateDialog} className="bg-[#f5a623] hover:bg-[#e09000] text-white">
               <Plus className="w-4 h-4 mr-2" />
               Add Client
             </Button>
+            </div>
           </div>
         </div>
       </header>

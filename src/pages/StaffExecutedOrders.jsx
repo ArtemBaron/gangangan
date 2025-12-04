@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
-import { ArrowLeft, Search, Eye } from 'lucide-react';
+import { ArrowLeft, Search, Eye, Globe } from 'lucide-react';
 import StaffExecutedDrawer from '@/components/staff/StaffExecutedDrawer';
 
 export default function StaffExecutedOrders() {
@@ -61,17 +61,25 @@ export default function StaffExecutedOrders() {
     <div className="min-h-screen bg-slate-50">
       <header className="bg-[#1e3a5f] border-b border-[#1e3a5f]/20 shadow-lg sticky top-0 z-10">
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-4">
-            <Link to={createPageUrl('StaffDashboard')}>
-              <Button variant="ghost" size="icon" className="text-white/80 hover:text-white hover:bg-white/10">
-                <ArrowLeft className="w-5 h-5" />
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-4">
+              <Link to={createPageUrl('StaffDashboard')}>
+                <Button variant="ghost" size="icon" className="text-white/80 hover:text-white hover:bg-white/10">
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
+              </Link>
+              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center p-1 shadow">
+                <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a9a123941f81322f5/b1a1be267_gan.png" alt="Logo" className="w-full h-full object-contain" />
+              </div>
+              <h1 className="text-xl font-bold text-white">Executed Orders</h1>
+              <Badge className="bg-emerald-600 text-white shadow">{executedOrders.length}</Badge>
+            </div>
+            <Link to={createPageUrl('GTrans')}>
+              <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10">
+                <Globe className="w-4 h-4 mr-1" />
+                Public Site
               </Button>
             </Link>
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center p-1 shadow">
-              <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69233f5a9a123941f81322f5/b1a1be267_gan.png" alt="Logo" className="w-full h-full object-contain" />
-            </div>
-            <h1 className="text-xl font-bold text-white">Executed Orders</h1>
-            <Badge className="bg-emerald-600 text-white shadow">{executedOrders.length}</Badge>
           </div>
         </div>
       </header>

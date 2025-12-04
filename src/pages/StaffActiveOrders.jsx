@@ -218,6 +218,12 @@ export default function StaffActiveOrders() {
               </div>
               <h1 className="text-xl font-bold text-white">Active Orders</h1>
               <Badge className="bg-[#f5a623] text-white shadow">{activeOrders.length}</Badge>
+              <Link to={createPageUrl('GTrans')} className="ml-4">
+                <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10">
+                  <Globe className="w-4 h-4 mr-1" />
+                  Public Site
+                </Button>
+              </Link>
             </div>
             <div className="flex items-center gap-3">
               {selectedIds.size > 0 && (

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Plus, Pencil, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plus, Pencil, Trash2, Globe } from 'lucide-react';
 
 const CURRENCIES = ['USD', 'EUR', 'CNY', 'IDR'];
 
@@ -106,10 +106,18 @@ export default function StaffPayeerAccounts() {
               </div>
               <h1 className="text-xl font-bold text-white">Payeer Accounts</h1>
             </div>
-            <Button onClick={openCreateDialog} className="bg-[#f5a623] hover:bg-[#e09000] text-white">
+            <div className="flex items-center gap-3">
+              <Link to={createPageUrl('GTrans')}>
+                <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10">
+                  <Globe className="w-4 h-4 mr-1" />
+                  Public Site
+                </Button>
+              </Link>
+              <Button onClick={openCreateDialog} className="bg-[#f5a623] hover:bg-[#e09000] text-white">
               <Plus className="w-4 h-4 mr-2" />
               Add Account
             </Button>
+            </div>
           </div>
         </div>
       </header>
