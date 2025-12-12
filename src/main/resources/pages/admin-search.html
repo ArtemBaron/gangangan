@@ -1,0 +1,164 @@
+<!-- 🔹 search Form -->
+
+<div class="p-4">
+    <h2 class="text-xl font-bold mb-4" data-i18n="Search">Search</h2>
+
+<div id="csvErrors" class="text-red-600 text-sm"></div>
+
+<!-- 🔹 Admin Controls -->
+<div id="adminSearchControl" class="rounded p-2 border border-green-300 mb-2 flex items-center gap-8">
+
+    <!-- 🔹 Show All Button -->
+    <button id="showAllBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm" data-i18n="Show All Entries">
+        Show All Entries
+    </button>
+
+    <!-- 🔹 CSV Import -->
+    <label for="csvFileInput" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm cursor-pointer">
+        <span id="csvImportTitle" data-i18n="Import CSV">Import CSV</span>
+        <input type="file" id="csvFileInput" accept=".csv" class="hidden" />
+    </label>
+</div>
+
+<form id="searchForm" class="bg-gray-50 p-3 rounded-lg border mb-4">
+    <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
+        <!-- selector menu -->
+        <div class="w-full sm:w-auto">
+            <select id="entryTypeSelect" class="border p-2 rounded text-sm w-full">
+                <option value="1" selected data-i18n="Individual">Individual</option>
+                <option value="2" data-i18n="Corporate">Corporate</option>
+            </select>
+        </div>
+
+        <!-- text input -->
+        <div class="flex-1 w-full sm:w-auto">
+            <input
+                    type="text"
+                    id="searchInput"
+                    class="border p-2 rounded text-sm w-full"
+                    data-i18n-placeholder="Search"
+            />
+        </div>
+
+        <!-- checkbox all search -->
+        <label class="inline-flex items-center whitespace-nowrap">
+            <input type="checkbox" id="allSearchCheckbox" class="rounded border-gray-300 text-blue-600">
+            <span class="ml-2 text-sm" data-i18n="Search All Data">Search All Data</span>
+        </label>
+
+        <!-- button search -->
+        <button
+                type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded text-sm w-full sm:w-auto"
+                data-i18n="SearchButton"
+        >
+            Search
+        </button>
+    </div>
+</form>
+
+<!-- 🔹 Results -->
+<div id="resultsList">
+    <ul id="resultsUL" class="list-none p-0"></ul>
+</div>
+
+<!-- 🔹 Edit Modal -->
+<div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded shadow w-300">
+        <h3 id="editModalTitle" class="text-lg font-bold mb-2" data-i18n="Edit Entry">Edit Entry</h3>
+
+        <form id="editForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+            <div>
+                <label class="block font-medium mb-1" for="sourceList" data-i18n="Source List">Source List</label>
+                <input type="text" name="sourceList" id="sourceList" class="border p-2 w-full rounded" data-i18n-placeholder="Source List" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="entryType" data-i18n="Entry Type">Entry Type</label>
+                <input type="text" name="entryType" id="entryType" class="border p-2 w-full rounded" data-i18n-placeholder="Entry Type" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="fullName" data-i18n="Full Name">Full Name</label>
+                <input type="text" name="fullName" id="fullName" class="border p-2 w-full rounded" data-i18n-placeholder="Full Name" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="name1" data-i18n="Name 1">Name 1</label>
+                <input type="text" name="name1" id="name1" class="border p-2 w-full rounded" data-i18n-placeholder="Name 1" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="name2" data-i18n="Name 2">Name 2</label>
+                <input type="text" name="name2" id="name2" class="border p-2 w-full rounded" data-i18n-placeholder="Name 2" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="name3" data-i18n="Name 3">Name 3</label>
+                <input type="text" name="name3" id="name3" class="border p-2 w-full rounded" data-i18n-placeholder="Name 3" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="name4" data-i18n="Name 4">Name 4</label>
+                <input type="text" name="name4" id="name4" class="border p-2 w-full rounded" data-i18n-placeholder="Name 4" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="alias" data-i18n="Alias">Alias</label>
+                <input type="text" name="alias" id="alias" class="border p-2 w-full rounded" data-i18n-placeholder="Alias" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="nationality" data-i18n="Nationality">Nationality</label>
+                <input type="text" name="nationality" id="nationality" class="border p-2 w-full rounded" data-i18n-placeholder="Nationality" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="identityNo" data-i18n="Identity No">Identity No</label>
+                <input type="text" name="identityNo" id="identityNo" class="border p-2 w-full rounded" data-i18n-placeholder="Identity No" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="passportNo" data-i18n="Passport">Passport</label>
+                <input type="text" name="passportNo" id="passportNo" class="border p-2 w-full rounded" data-i18n-placeholder="Passport" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="dob" data-i18n="Date of Birth">Date of Birth</label>
+                <input type="text" name="dob" id="dob" class="border p-2 w-full rounded" data-i18n-placeholder="Date of Birth" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="pob" data-i18n="Place of Birth">Place of Birth</label>
+                <input type="text" name="pob" id="pob" class="border p-2 w-full rounded" data-i18n-placeholder="Place of Birth" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="address" data-i18n="Address">Address</label>
+                <input type="text" name="address" id="address" class="border p-2 w-full rounded" data-i18n-placeholder="Address" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="title" data-i18n="Title">Title</label>
+                <input type="text" name="title" id="title" class="border p-2 w-full rounded" data-i18n-placeholder="Title" />
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="jobTitle" data-i18n="Job Title">Job Title</label>
+                <textarea name="jobTitle" id="jobTitle" class="border p-2 w-full rounded" rows="4" data-i18n-placeholder="Job Title"></textarea>
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="additionalInfo" data-i18n="Additional Info">Additional Info</label>
+                <textarea name="additionalInfo" id="additionalInfo" class="border p-2 w-full rounded" rows="4" data-i18n-placeholder="Additional Info"></textarea>
+            </div>
+            <div>
+                <label class="block font-medium mb-1" for="loadDate" data-i18n="Load Date">Load Date</label>
+                <input type="text" name="loadDate" id="loadDate" class="border p-2 w-full rounded" data-i18n-placeholder="Load Date" />
+            </div>
+
+            <div class="md:col-span-3 flex justify-around mt-2 w-full">
+                <button type="submit" id="saveBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded" data-i18n="Save">Save</button>
+                <button type="button" id="cancelEditBtn" class="bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded" data-i18n="Cancel">Cancel</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+<div id="entryDetails" class="details hidden"></div>
+
+</div>
+
+<!-- ======================
+     ПОДКЛЮЧЕНИЕ JS-МОДУЛЕЙ
+     ====================== -->
+<script data-src="/js/init-manager.js"></script>
+<script data-src="/js/init-modules.js"></script>
+<script data-src="/js/admin-main.js"></script>
+<script data-src="/js/admin-search.js"></script>

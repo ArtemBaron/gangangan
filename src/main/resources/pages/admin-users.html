@@ -1,0 +1,61 @@
+<!--ADMIN_USERS_PAGE-->
+
+<div class="p-4">
+    <h2 class="text-xl font-bold mb-4" data-i18n="Users">Users</h2>
+
+    <button id="addUserBtn"
+            class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded mb-4"
+            data-i18n="Add User">
+        Add User
+    </button>
+
+    <ul id="usersList" class="space-y-2"></ul>
+</div>
+
+
+<!-- ===========================
+     МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ
+     =========================== -->
+<div id="editUserModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded shadow-lg w-96">
+        <h3 class="text-lg font-bold mb-4" id="editUserTitle" data-i18n="Edit User">Edit User</h3>
+
+        <form id="editUserForm" class="space-y-4">
+            <input name="username" required data-i18n-placeholder="Username" class="w-full border p-2 rounded"/>
+
+            <input type="password" name="password" data-i18n-placeholder="Password"
+                   class="w-full border p-2 rounded"/>
+
+            <select name="role" class="w-full border p-2 rounded">
+                <option value="USER" data-i18n="User">USER</option>
+                <option value="ADMIN" data-i18n="Admin">ADMIN</option>
+            </select>
+
+            <label class="flex items-center gap-2">
+                <input type="checkbox" name="status" />
+                <span data-i18n="Active">Active</span>
+            </label>
+
+            <div class="flex justify-end gap-2">
+                <button type="button" id="cancelEditUserBtn"
+                        class="px-3 py-1 bg-gray-500 text-white rounded"
+                        data-i18n="Cancel">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="px-3 py-1 bg-blue-600 text-white rounded"
+                        data-i18n="Save">
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ======================
+     ПОДКЛЮЧЕНИЕ JS-МОДУЛЕЙ
+     ====================== -->
+<script data-src="/js/init-manager.js"></script>
+<script data-src="/js/init-modules.js"></script>
+<script data-src="/js/admin-main.js"></script>
+<script data-src="/js/admin-users.js"></script>

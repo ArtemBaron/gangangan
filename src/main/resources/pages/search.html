@@ -1,0 +1,55 @@
+<div class="p-4">
+    <h2 class="text-xl font-bold mb-4" data-i18n="Search">Search</h2>
+
+    <!-- 🔹 search Form -->
+<form id="searchForm" class="bg-gray-50 p-3 rounded-lg border mb-4">
+    <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
+        <!-- selector menu -->
+        <div class="w-full sm:w-auto">
+            <select id="entryTypeSelect" class="border p-2 rounded text-sm w-full">
+                <option value="1" selected data-i18n="Individual">Individual</option>
+                <option value="2" data-i18n="Corporate">Corporate</option>
+            </select>
+        </div>
+
+        <!-- text input -->
+        <div class="flex-1 w-full sm:w-auto">
+            <input
+                    type="text"
+                    id="searchInput"
+                    class="border p-2 rounded text-sm w-full"
+                    data-i18n-placeholder="Search"
+            />
+        </div>
+
+        <!-- checkbox all search -->
+        <label class="inline-flex items-center whitespace-nowrap">
+            <input type="checkbox" id="allSearchCheckbox" class="rounded border-gray-300 text-blue-600">
+            <span class="ml-2 text-sm" data-i18n="Search All Data">Search All Data</span>
+        </label>
+
+        <!-- button search -->
+        <button
+                type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded text-sm w-full sm:w-auto"
+                data-i18n="SearchButton"
+        >
+            Search
+        </button>
+    </div>
+</form>
+
+<!-- 🔹 Results -->
+<div id="resultsList">
+    <ul id="resultsUL" class="list-none p-0"></ul>
+</div>
+
+<div id="entryDetails" class="details hidden"></div>
+
+</div>
+
+<script data-src="/js/init-manager.js"></script>
+<script data-src="/js/init-modules.js"></script>
+<script data-src="/js/main.js"></script>
+<script data-src="/js/search.js"></script>
+

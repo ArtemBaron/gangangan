@@ -1,0 +1,215 @@
+<div class="p-4">
+    <h2 class="text-xl font-bold mb-4" data-i18n="Payment Order">Payment Order</h2>
+
+    <!-- 🔹 Controls -->
+    <div id="PaymentOrderControl" class="rounded p-3 border border-blue-300 mb-4 flex items-center gap-4 bg-gray-50">
+        <button id="addPaymentOrderBtn"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
+                data-i18n="Add Payment Order">
+            Add Payment Order
+        </button>
+
+        <button id="showPaymentOrderBtn"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
+                data-i18n="Show Payment Order">
+            Show Payment Order
+        </button>
+    </div>
+
+    <!-- 🔹 Payment Order Form (hidden by default) -->
+    <form id="paymentOrderForm"
+          class="bg-gray-50 p-4 rounded-lg border mb-4 hidden">
+
+        <!-- Amount -->
+        <div class="mb-3">
+            <label for="amount" class="block text-sm font-medium mb-1">Amount *</label>
+            <input type="number" step="0.01" id="amount" name="amount"
+                   class="border p-2 rounded text-sm w-full"
+                   required placeholder="e.g. 1234.56">
+            <div class="text-red-600 text-sm mt-1" id="amountError"></div>
+        </div>
+
+        <!-- Currency -->
+        <div class="mb-3">
+            <label for="currency" class="block text-sm font-medium mb-1">Currency *</label>
+            <select id="currency" name="currency"
+                    class="border p-2 rounded text-sm w-full" required>
+                <option value="">Select currency</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="CNY">CNY</option>
+                <option value="IDR">IDR</option>
+            </select>
+            <div class="text-red-600 text-sm mt-1" id="currencyError"></div>
+        </div>
+
+        <!-- Beneficiary Name -->
+        <div class="mb-3">
+            <label for="beneficiaryName" class="block text-sm font-medium mb-1">Beneficiary Name *</label>
+            <input type="text" id="beneficiaryName" name="beneficiaryName"
+                   maxlength="70"
+                   class="border p-2 rounded text-sm w-full"
+                   placeholder="Allowed: A–Z 0–9 /-?:().,'+;">
+            <div class="text-red-600 text-sm mt-1" id="beneficiaryNameError"></div>
+        </div>
+
+        <!-- Beneficiary Address -->
+        <div class="mb-3">
+            <label for="beneficiaryAddress" class="block text-sm font-medium mb-1">Beneficiary Address *</label>
+            <input type="text" id="beneficiaryAddress" name="beneficiaryAddress"
+                   maxlength="105"
+                   class="border p-2 rounded text-sm w-full"
+                   placeholder="Allowed: A–Z 0–9 /-?:().,'+;">
+            <div class="text-red-600 text-sm mt-1" id="beneficiaryAddressError"></div>
+        </div>
+
+        <!-- Destination Account -->
+        <div class="mb-3">
+            <label for="destinationAccount" class="block text-sm font-medium mb-1">Destination Account Number *</label>
+            <input type="text" id="destinationAccount" name="destinationAccount"
+                   maxlength="35"
+                   class="border p-2 rounded text-sm w-full">
+            <div class="text-red-600 text-sm mt-1" id="destinationAccountError"></div>
+        </div>
+
+        <!-- Country Bank -->
+        <div class="mb-3">
+            <label for="countryBank" class="block text-sm font-medium mb-1">Country (Bank) *</label>
+            <select id="countryBank" name="countryBank"
+                    class="border p-2 rounded text-sm w-full" required>
+                <option value="">Select country</option>
+            </select>
+            <div class="text-red-600 text-sm mt-1" id="countryBankError"></div>
+        </div>
+
+        <!-- BIC -->
+        <div class="mb-3">
+            <label for="bic" class="block text-sm font-medium mb-1">BIC (Bank)</label>
+            <input type="text" id="bic" name="bic"
+                   maxlength="11"
+                   class="border p-2 rounded text-sm w-full"
+                   placeholder="8 or 11 alphanumeric">
+            <div class="text-red-600 text-sm mt-1" id="bicError"></div>
+        </div>
+
+        <!-- Bank Name -->
+        <div class="mb-3">
+            <label for="bankName" class="block text-sm font-medium mb-1">Bank Name *</label>
+            <input type="text" id="bankName" name="bankName"
+                   class="border p-2 rounded text-sm w-full bg-gray-100"
+                   readonly>
+            <label class="inline-flex items-center mt-1 gap-2">
+                <input type="checkbox" id="bankManualOverride" name="bankManualOverride">
+                <span class="text-sm">Manual override</span>
+            </label>
+            <div class="text-red-600 text-sm mt-1" id="bankNameError"></div>
+        </div>
+
+        <!-- Bank Address -->
+        <div class="mb-3">
+            <label for="bankAddress" class="block text-sm font-medium mb-1">Bank Address *</label>
+            <input type="text" id="bankAddress" name="bankAddress"
+                   class="border p-2 rounded text-sm w-full bg-gray-100"
+                   readonly>
+            <div class="text-red-600 text-sm mt-1" id="bankAddressError"></div>
+        </div>
+
+        <!-- Transaction Remark Block -->
+        <fieldset class="border rounded-lg p-3 mb-3">
+            <legend class="text-sm font-medium px-1">Transaction Remark *</legend>
+
+            <!-- Mode -->
+            <div class="mb-3">
+                <label for="remarkMode" class="block text-sm font-medium mb-1">Mode *</label>
+                <select id="remarkMode" name="remarkMode"
+                        class="border p-2 rounded text-sm w-full">
+                    <option value="MANUAL">Manual</option>
+                    <option value="TEMPLATE">Template</option>
+                </select>
+            </div>
+
+            <!-- Remark Text -->
+            <div class="mb-3">
+                <label for="transactionRemark" class="block text-sm font-medium mb-1">Remark Text / Template *</label>
+                <textarea id="transactionRemark" name="transactionRemark"
+                          maxlength="500"
+                          class="border p-2 rounded text-sm w-full"
+                          rows="4"
+                          placeholder="Manual text or template with tokens"></textarea>
+                <div class="text-red-600 text-sm mt-1" id="transactionRemarkError"></div>
+            </div>
+
+            <!-- Tokens -->
+            <fieldset class="border rounded-lg p-3">
+                <legend class="text-sm font-medium px-1">Tokens</legend>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-sm">INV_NO</label>
+                        <input type="text" id="tokenINV_NO" name="tokenINV_NO"
+                               maxlength="32"
+                               class="border p-2 rounded text-sm w-full">
+                    </div>
+
+                    <div>
+                        <label class="text-sm">DATE</label>
+                        <input type="text" id="tokenDATE" name="tokenDATE"
+                               class="border p-2 rounded text-sm w-full"
+                               placeholder="DD/MM/YYYY">
+                    </div>
+
+                    <div>
+                        <label class="text-sm">GOODS</label>
+                        <input type="text" id="tokenGOODS" name="tokenGOODS"
+                               maxlength="40"
+                               class="border p-2 rounded text-sm w-full">
+                    </div>
+
+                    <div>
+                        <label class="text-sm">TYPE</label>
+                        <select id="tokenTYPE" name="tokenTYPE"
+                                class="border p-2 rounded text-sm w-full">
+                            <option value="inv">inv</option>
+                            <option value="invoice">invoice</option>
+                            <option value="contract">contract</option>
+                            <option value="proforma invoice">proforma invoice</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-sm">PAYMENT</label>
+                        <select id="tokenPAYMENT" name="tokenPAYMENT"
+                                class="border p-2 rounded text-sm w-full">
+                            <option value="Payment">Payment</option>
+                            <option value="Partial payment">Partial payment</option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+
+        </fieldset>
+
+        <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded text-sm w-full mt-2">
+            Send the Order
+        </button>
+
+    </form>
+
+    <!-- Info Block -->
+    <div class="info-block bg-gray-50 p-3 rounded-lg border">
+        <p class="text-sm">
+            <strong>Invoice required (MVP-0):</strong>
+            For processing, send invoice to:
+            <span id="invoiceEmail" class="font-mono">sales@garudar.id</span>
+        </p>
+
+        <button type="button"
+                class="bg-gray-200 hover:bg-gray-300 text-black px-3 py-1 rounded text-sm mt-2">
+            Copy email
+        </button>
+    </div>
+</div>
+
+
+

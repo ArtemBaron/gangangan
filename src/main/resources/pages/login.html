@@ -1,0 +1,13 @@
+<!--LOGIN_PAGE-->
+
+<div id="loginContainer" class="border bg-white p-6 rounded shadow max-w-sm mx-auto mt-10">
+    <h2 id="loginTitle" class="text-xl font-bold mb-4" data-i18n="Login">Login</h2>
+    <input type="text" id="username" class="border p-2 w-full rounded mb-2" data-i18n-placeholder="Username" />
+    <input type="password" id="password" class="border p-2 w-full rounded mb-2" data-i18n-placeholder="Password" />
+    <button id="loginButton" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full" data-i18n="Login">Login</button>
+    <p id="loginError" class="text-red-600 text-sm mt-2 hidden" data-i18n="Invalid credentials">Invalid credentials</p>
+</div>
+
+<script data-src="/js/init-manager.js"></script>
+<script data-src="/js/init-modules.js"></script>
+<script data-src="/js/login.js"></script>

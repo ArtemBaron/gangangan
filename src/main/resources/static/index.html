@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>garudar.id</title>
+
+    <!-- Подключаем наш JS скрипт проверки браузера -->
+    <script src="js/browser-check.js" defer></script>
+
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <script src="js/app.js" defer></script>
+    <script src="js/global.js" defer></script>
+    <script src="js/index.global.js"></script>
+    <script src="js/papaparse.min.js"></script>
+    <script src="js/i18next.min.js"></script>
+
+    <script src="js/i18n-resources.js" defer></script>
+    <script src="js/i18n-init.js" defer></script>
+
+    <style>
+        body { padding: 2rem; font-family: sans-serif; }
+        .result-item { cursor: pointer; padding: 0.5rem; border-bottom: 1px solid #ddd; display: flex; align-items: center; }
+        .result-item .icon { margin-right: 0.5rem; }
+        .details { border: 1px solid #ddd; padding: 1rem; margin-top: 1rem; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+<div class="flex justify-between items-center mb-4">
+<div class="flex items-center gap-4">
+    <!-- 🔹 logo -->
+    <img src="images/logo.jpg" alt="Logo" class="h-25 w-auto">
+    <!-- 🔹 language switch -->
+    <select id="languageSwitcher" class="border p-1 rounded">
+        <option value="id" data-i18n="Bahasa">Bahasa</option>
+        <option value="en" data-i18n="English">English</option>
+    </select>
+</div>
+    <div>
+        <button id="logoutButton" class="border p-1 rounded hidden" data-i18n="Logout">Logout</button>
+    </div>
+</div>
+<div id="appContainer"></div>
+
+</body>
+</html>

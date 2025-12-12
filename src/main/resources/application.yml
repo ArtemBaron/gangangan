@@ -1,0 +1,41 @@
+server:
+#  servlet:
+#    context-path: /app
+  port: 8090
+
+spring:
+  application:
+    name: server-garudar-book
+  # DataSource settings: set here configurations for the database connection
+  datasource:
+    url: jdbc:h2:file:./data/serverdb;DB_CLOSE_DELAY=0;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  # JPA / Hibernate properties
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      dialect: org.hibernate.dialect.H2Dialect
+    show-sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  flyway:
+         enabled: true
+         locations: classpath:db/migration
+         validate-on-migrate: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    persist-authorize: true
+
+jwt:
+  secret: Bqe6acew2eZqvZiGyl8L5I30suioMYZTaV5ge1TL0OsiYQkvEwQy2pM6MAE3w7MIqvZiGyl8L5I30suioMYZTaV5ge1TL0Os
+  expiration: 8640000
